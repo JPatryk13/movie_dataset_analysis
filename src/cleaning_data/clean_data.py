@@ -1,0 +1,2 @@
+class CleanData:
+    pass
