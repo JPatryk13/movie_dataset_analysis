@@ -2,6 +2,7 @@ import pandas as pd
 from pathlib import Path
 import re
 import json
+from make_junction_table import make_junction_table
 
 pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1000)
@@ -12,7 +13,9 @@ df = pd.read_csv(archive_path / "credits.csv", low_memory=False).reset_index()
 
 cast_dict_keys = ("cast_id", "character", "credit_id", "gender", "id", "name", "order", "profile_path")
 
-for elem in df["cast"]:
+converted = []
+
+for elem in df["cast"].drop_duplicates(keep=False):
 
     # noinspection PyBroadException
     try:
@@ -23,7 +26,7 @@ for elem in df["cast"]:
 
     except Exception:
 
-        # Do nothing on error - the iteration of the loop is going to be skipped anyways
+        # Do nothing on error - the iteration of the loop is going to be skipped anyway
         pass
 
     finally:
@@ -48,29 +51,50 @@ for elem in df["cast"]:
                         str_dict
                     )
 
-                    val = val_match_obj.group()[len(key) + 3:-len(key2) - 3] if val_match_obj else None
-
-                    if val:
-
-                        if "'" in val:
-
-                            # val is a string
-                            temp_dict[key] = val[1:-1].replace("\"", "\'")
-
-                        else:
-
-                            # value is numeric type
-                            temp_dict[key] = float(val) if "." in val else int(val)
-
+                    if val_match_obj:
+                        val = val_match_obj.group()[len(key) + 3:-len(key2) - 3]
                     else:
-
-                        temp_dict[key] = None
+                        val = None
 
                 else:
 
-                    break
+                    val_match_obj = re.search(
+                        rf"{key}\s*([^\n\r]*)",
+                        str_dict
+                    )
 
-            print(str_dict)
-            print(temp_dict)
+                    if val_match_obj:
+                        val = val_match_obj.group()[len(key) + 3:].replace("'}", "")
+                    else:
+                        val = None
 
-        break
+                    temp_dict["original_value"] = elem
+
+                if val and "None" not in val:
+
+                    if "'" in val:
+
+                        # val is a string
+                        temp_dict[key] = val[1:-1].replace("\"", "\'")
+
+                    else:
+
+                        # value is numeric type
+                        temp_dict[key] = float(val) if "." in val else int(val)
+
+                else:
+
+                    temp_dict[key] = None
+
+            converted.append(temp_dict)
+
+sub_df = pd.DataFrame(converted).reset_index()
+junction_df = make_junction_table(
+    left_df=df,
+    right_df=sub_df,
+    merge_on=("cast", "original_value"),
+    new_index_names=("credits_fk", "cast_fk")
+)
+print(junction_df)
+
+
