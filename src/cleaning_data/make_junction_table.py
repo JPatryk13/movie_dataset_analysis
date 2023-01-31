@@ -6,7 +6,7 @@ def make_junction_table(
         right_df: pd.DataFrame,
         *, merge_on: tuple[str, str],
         old_index_names: tuple[str, str] = ("index", "index"),
-        new_index_names: tuple[str, str] = ("left_df_fk", "left_df_fk")
+        new_index_names: tuple[str, str] = ("left_df_fk", "right_df_fk")
 ) -> pd.DataFrame:
     """
     Merge (inner) given dataframes on merge_on columns and extract only foreign key (from the left and right dataframes)
