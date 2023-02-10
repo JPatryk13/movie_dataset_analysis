@@ -1,105 +1,75 @@
 import pandas as pd
+from pathlib import Path
+import re
 import json
-from flatten_json import flatten
 
-# pd.set_option('display.max_columns', None)
+pd.set_option('display.max_columns', 500)
+pd.set_option('display.width', 1000)
 
-file_path = 'D:\projekt z patrykiem\movie_dataset_analysis\dataset\\archive\credits.csv'
+archive_path = Path(__file__).resolve().parent.parent.parent / "dataset" / "archive"
 
-# df = pd.read_csv(file_path, index_col='id')
-df = pd.read_csv(file_path)
+df = pd.read_csv(archive_path / "credits.csv", low_memory=False).reset_index()
 
-df['cast'] = df['cast'].str.replace("'",'"', regex=False)
-df['cast'] = df['cast'].str.replace("None",'null', regex=False)
-# print(df['cast'])
-# df['cast'] = df['cast'].apply(json.loads)
-# print(df['cast'])
+cast_dict_keys = ("cast_id", "character", "credit_id", "gender", "id", "name", "order", "profile_path")
 
-df = df[['id', 'cast']].iloc[50:150].to_json(orient='records')
-print(df)
-df_json = json.loads(df)
-# print(df_json)
-json.loads(df_json[0]["cast"])
-# print(json.loads(df_json[0]["cast"]))
-print(type(df_json[0]["cast"]))
-# print(pd.json_normalize())
+for elem in df["cast"].iloc[1442:1444]:
+    # noinspection PyBroadException
+    try:
 
-# df_json = df.to_json(orient='records')
-# json_from_df = json.loads(df_json)
-# for record in json_from_df:
-    # print(record)
+        # Skips empty lists
+        if not json.loads(elem):
+            continue
 
+    except Exception:
 
-# dic = json_from_df[0]
-# dic_flattened = [flatten(d) for d in dic]
-# print(dic_flattened)
-# for d in dic:
-#     print(d)
+        # Do nothing on error - the iteration of the loop is going to be skipped anyways
+        pass
 
+    finally:
 
+        str_list = elem.split("}, {")
 
-# df = df[['cast', 'id']][:2]
-# df_json = df.to_json(orient='records')
-# print(json.loads(df_json)[0]['cast'])
-# print(pd.json_normalize(json.loads(df_json)[0]))
-# check_json = pd.json_normalize(json.loads(df_json), meta=['cast'])
-# print(json.loads(df_json))
-# print(type(json.loads(df_json)))
-# print(check_json)
-# df_cast = pd.json_normalize(df, 'cast')
-# print(df_cast)
+        for str_dict in str_list:
 
+            # store converted/cleaned key-value pairs
+            temp_dict = {}
 
-# y = json.dumps(json.loads(df_json))
-# print(y)
-# print(type(y))
-# final_df = pd.json_normalize(json.dumps(json.loads(df_json)), meta = ['id'])
-# print(final_df)
+            for i, key in enumerate(cast_dict_keys):
 
-# print(df)
-# print(df['cast'])
-# print(type(df['cast']))
+                if key is not cast_dict_keys[-1]:
 
-# print(pd.json_normalize(eval(df['cast'][0])))
+                    key2 = cast_dict_keys[i + 1]
 
+                    # Find values based to the preceding and following keys + remove first and last three chars which
+                    # are single quotes, spaces and double colons or commas
+                    val_match_obj = re.search(
+                        rf"\b{key}\b(.*?)\b{key2}\b",
+                        str_dict
+                    )
 
-# first_item = eval(df['cast'][0])
-# print(pd.json_normalize(first_item))
+                    val = val_match_obj.group()[len(key) + 3:-len(key2) - 3] if val_match_obj else None
+                    print(val)
+                    if val:
 
+                        if "'" in val:
 
+                            # val is a string
+                            temp_dict[key] = val[1:-1].replace("\"", "\'")
 
+                        else:
 
+                            # value is numeric type
+                            temp_dict[key] = float(val) if "." in val else int(val)
 
+                    else:
 
-#### PRZYKŁAD
-# json_response = {"id":1670,"symbol":"FX-GBP","name":"London","calType":"C","events":[{"date":"2021-01-01","name":"New Year's Day","type":"FULL","updateTime":"2021-06-18T18:15:55"},{"date":"2021-04-02","name":"Good Friday","type":"FULL","updateTime":"2021-06-18T18:15:55"},{"date":"2021-04-05","name":"Easter Monday","type":"FULL","updateTime":"2021-06-18T18:15:55"},{"date":"2021-05-03","name":"Early May Bank Holiday","type":"FULL","updateTime":"2021-06-18T18:15:55"},{"date":"2021-05-31","name":"Late May Bank Holiday","type":"FULL","updateTime":"2021-06-18T18:15:55"},{"date":"2021-08-30","name":"Summer Bank Holiday","type":"FULL","updateTime":"2021-06-18T18:15:55"},{"date":"2021-12-27","name":"Christmas OBS","type":"FULL","updateTime":"2021-06-18T18:15:55"},{"date":"2021-12-28","name":"Boxing Day OBS","type":"FULL","updateTime":"2021-06-18T18:15:55"}]}
-#
-# df_rest = pd.DataFrame(json_response)
-# df_event = pd.json_normalize(json_response, 'events')
-# complete_df = pd.concat([df_rest, df_event], axis=1)
-#
-# print(df_rest)
-# print(df_event)
-# complete_df = complete_df.drop(columns = ['events'])
-# print(complete_df)
+                        temp_dict[key] = None
 
+                else:
 
+                    break
 
+            # print(str_dict)
+            # print(temp_dict)
 
-
-#
-# import json
-# from pandas import DataFrame
-# from pandas.io.json import json_normalize
-#
-# df = DataFrame({'post_id':123456,
-#                 'comments': [{'from':'Bob','present':True},
-#                              {'from':'Jon', 'present':False}]})
-# df_json = df.to_json(orient='records')
-# print(df_json)
-# finaldf = json_normalize(json.loads(df_json), meta=['post_id'])
-# print(finaldf)
-#
-# #   comments.from comments.present  post_id
-# # 0           Bob             True   123456
-# # 1           Jon            False   123456
+        break
