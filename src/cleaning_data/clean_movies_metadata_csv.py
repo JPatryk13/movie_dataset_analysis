@@ -89,4 +89,5 @@ if __name__ == "__main__":
     print(production_countries_df, production_countries_junction_df)
     print(production_companies_df, production_companies_junction_df)
     print(spoken_languages_df, spoken_languages_junction_df)
+    print(production_companies_df)
     print(df)
