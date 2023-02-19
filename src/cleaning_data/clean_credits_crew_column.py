@@ -31,4 +31,8 @@ crew_film_id_df = pd.json_normalize(
     record_path='crew',
     meta='id',
     meta_prefix='film_'
-)
+).drop(['credit_id'], axis=1)
+
+crew_df = crew_film_id_df[['department', 'id', 'job', 'film_id']].drop_duplicates()
+
+people_df = crew_film_id_df[['id', 'gender', 'name', 'profile_path', 'film_id']].drop_duplicates()
