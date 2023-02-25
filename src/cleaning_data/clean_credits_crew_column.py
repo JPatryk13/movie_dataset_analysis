@@ -34,27 +34,22 @@ crew_film_id_df = pd.json_normalize(
     meta_prefix='film_'
 ).drop(['credit_id'], axis=1).drop_duplicates(ignore_index=True).reset_index(names='crew_id')
 
-# whole crew dataframe before split to job, department and junctions
-# crew_df = crew_film_id_df[['department', 'job', 'film_id']].drop_duplicates(ignore_index=True)
-
 # people_df before junction
-people_df = crew_film_id_df[['id', 'gender', 'name', 'profile_path', 'film_id']].drop_duplicates(ignore_index=True)
+people_df = crew_film_id_df[['id', 'gender', 'name', 'profile_path']].drop_duplicates(ignore_index=True)
+#
+# 3 duplicates people below checking duplicates function
+# print(people_df[people_df[['id', 'name']].duplicated(keep=False)])
 
-# add junction people and crew
-
-# add junction jobs and crew
-# jun = make_junction_table(crew_film_id_df)
-
-# jobs df
+# jobs df -> done
 jobs_before_merge = crew_film_id_df[['job', 'department']].drop_duplicates(ignore_index=True).reset_index(names='job_id')
 
-# departments df
+# departments df -> done
 departments_df = jobs_before_merge[['department']].drop_duplicates(ignore_index=True).reset_index(names='department_id')
 
-# add departments to jobs
+# add departments to jobs -> done
 jobs_df = jobs_before_merge.merge(departments_df, 'left', on='department').drop('department', axis=1)
 
-# crew jobs junction
+# crew jobs junction -> done
 crew_jobs_junction = make_junction_table(
     crew_film_id_df,
     jobs_before_merge,
@@ -62,3 +57,6 @@ crew_jobs_junction = make_junction_table(
     old_index_names=('crew_id', 'job_id'),
     new_index_names=('crew_fk', 'jobs_fk')
 )
+
+# crew dataframe need to match with crew table from ERD
+#crew_df = crew_film_id_df
