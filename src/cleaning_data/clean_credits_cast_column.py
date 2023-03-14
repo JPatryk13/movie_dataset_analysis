@@ -9,7 +9,7 @@ pd.set_option('display.width', 1000)
 
 archive_path = Path(__file__).resolve().parent.parent.parent / "dataset" / "archive"
 
-df = pd.read_csv(archive_path / "credits.csv", low_memory=False).reset_index()
+df = pd.read_csv(archive_path / "credits.csv", low_memory=False).drop_duplicates(ignore_index=True).reset_index()
 
 cast_dict_keys = ("cast_id", "character", "credit_id", "gender", "id", "name", "order", "profile_path")
 
@@ -88,13 +88,13 @@ for elem in df["cast"].drop_duplicates(keep=False):
 
             converted.append(temp_dict)
 
-sub_df = pd.DataFrame(converted).reset_index()
+sub_df = pd.DataFrame(converted).drop(['cast_id', 'credit_id', 'order'], axis=1).reset_index(names='cast_id')
 junction_df = make_junction_table(
     left_df=df,
     right_df=sub_df,
     merge_on=("cast", "original_value"),
+    old_index_names= ("index", "cast_id"),
     new_index_names=("credits_fk", "cast_fk")
 )
 print(junction_df)
-
-
+print(sub_df)
