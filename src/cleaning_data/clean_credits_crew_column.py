@@ -1,9 +1,10 @@
 import pandas as pd
 import json
 from pathlib import Path
-from make_junction_table import make_junction_table
+from tools import make_junction_table
 
 pd.set_option('display.max_columns', None)
+# pd.set_option('display.max_rows', None)
 
 archive_path = Path(__file__).resolve().parent.parent.parent / "dataset" / "archive"
 
@@ -42,14 +43,20 @@ crew_film_id_df = pd.json_normalize(
 # clean wrong people -> check each time is all people valid
 crew_film_id_df.loc[crew_film_id_df.name == 'Sally Boldt', 'gender'] = 1
 crew_film_id_df.loc[crew_film_id_df.name == 'Peter Malota', 'gender'] = 2
+crew_film_id_df.loc[crew_film_id_df.id == 148084, 'profile_path'] = None
+crew_film_id_df.loc[crew_film_id_df.id == 260050, 'profile_path'] = None
+crew_film_id_df.loc[crew_film_id_df.id == 46391, 'profile_path'] = None
+crew_film_id_df.loc[crew_film_id_df.id == 127279, 'profile_path'] = None
 crew_film_id_df.loc[crew_film_id_df.name == 'Fruit Chan', 'profile_path'] = '/j1Xktbs6M6kNIwaLUps9swSEdVs.jpg'
-
+crew_film_id_df.loc[crew_film_id_df.name == 'Ka-Fai Cheung', 'name'] = 'Cheung Ka-Fai'
+crew_film_id_df.drop(crew_film_id_df.loc[crew_film_id_df.id == 1339312].index, inplace=True)
+crew_film_id_df.drop(crew_film_id_df.loc[crew_film_id_df.id == 572046].index, inplace=True)
 
 ##################################
 # prepare df to match ERD tables #
 ##################################
 
-# people_df before junction
+# people_df before junction -> done
 people_df = crew_film_id_df[['id', 'gender', 'name', 'profile_path']].drop_duplicates(ignore_index=True)
 
 # jobs df -> done
@@ -65,7 +72,7 @@ jobs_df = jobs_before_merge.merge(departments_df, 'left', on='department').drop(
 # crew jobs junction -> done
 crew_jobs_junction = make_junction_table(
     crew_film_id_df,
-    jobs_before_merge,
+    jobs_before_merge, # zmienić na jobs_df!!!
     merge_on=('job', 'job'),
     old_index_names=('crew_id', 'job_id'),
     new_index_names=('crew_fk', 'jobs_fk')
@@ -82,4 +89,12 @@ crew_jobs_junction = make_junction_table(
 
 # !!!!! here is an error job_name = Other, but this jobs have departments imputed -> what to do??
 # print(crew_film_id_df[crew_film_id_df['crew_id'] == 321438])
-# print(jobs_before_merge[jobs_before_merge['job'] == 'Other'])
+# print(len(jobs_before_merge[jobs_before_merge['job'] == 'Other']))
+
+# print(crew_jobs_junction)
+# print(crew_film_id_df)
+# print(jobs_before_merge)
+
+# print(jobs_before_merge[jobs_before_merge['job'].duplicated(keep=False)])
+print(jobs_df)
+print(departments_df)
