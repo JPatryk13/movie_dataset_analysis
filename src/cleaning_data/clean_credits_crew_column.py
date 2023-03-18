@@ -87,9 +87,16 @@ crew_departments_junction = make_junction_table(
     new_index_names=('crew_fk', 'department_fk')
 )
 
-# crew_movies_junction -> not done
+# crew_movies_junction -> done
+columns_to_merge = ['department', 'gender', 'id', 'job', 'name', 'profile_path']
+crew_movies_junction = crew_film_id_df.merge(only_crew, how='left', on=columns_to_merge)[['film_id', 'crew_id']]
+
 
 # cast_df -> not done: use from clean_creadits_cast_column.py file
+
+# people from cast add to people_df
+
+# cast_movies_junction -> not done
 
 
 ####################
