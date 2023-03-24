@@ -9,7 +9,7 @@ class TestStrMap(unittest.TestCase):
         }
         self.map_with_two_words = {
             "word": "bar",
-            "a": "foo"
+            " a ": " foo "
         }
 
         self.str_with_word = {
@@ -22,7 +22,6 @@ class TestStrMap(unittest.TestCase):
             "replaced_one": "This is a foo within a foo",
             "replaced_two": "This is foo bar within foo bar"
         }
-
 
     def test_str_map_raise_type_error(self) -> None:
         self.map_with_int = {"word": 1}
@@ -38,12 +37,12 @@ class TestStrMap(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_str_map_replace_single_word_twice(self) -> None:
-        expected = self.str_with_word["replaced_two"]
+        expected = self.str_with_multiple_word["replaced_one"]
         actual = str_map(self.map_with_single_word, self.str_with_multiple_word["original"])
         self.assertEqual(expected, actual)
 
     def test_str_map_replace_two_words_once(self) -> None:
-        expected = self.str_with_multiple_word["replaced_one"]
+        expected = self.str_with_word["replaced_two"]
         actual = str_map(self.map_with_two_words, self.str_with_word["original"])
         self.assertEqual(expected, actual)
 
