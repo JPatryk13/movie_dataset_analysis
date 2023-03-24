@@ -4,24 +4,6 @@ from src.cleaning_data.tools import nested_dict_col_to_df
 
 
 class TestNestedDictColToDf(unittest.TestCase):
-    def setUp(self) -> None:
-        self.list_of_dicts = [
-            {"key1": "val1", "key2": 3},
-            {"key1": "val2", "key2": 4},
-            {"key1": "val3", "key2": 5},
-            {"key1": "val4", "key2": 6}
-        ]
-        self.ser_dicts_as_strs = pd.Series(data=[
-            '{"key1": "val1", "key2": 3}',
-            '{"key1": "val2", "key2": 4}',
-            '{"key1": "val3", "key2": 5}',
-            '{"key1": "val4", "key2": 6}'
-        ])
-        self.df = pd.DataFrame(data={
-            "key1": ["val1", "val2", "val3", "val4"],
-            "key2": [3, 4, 5, 6]
-        })
-
     def test_nested_dict_col_to_df_normal_dict_per_row(self) -> None:
         ser = pd.Series(data=[
             '{"key1": "val1", "key2": 3}',
