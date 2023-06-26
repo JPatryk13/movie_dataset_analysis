@@ -116,9 +116,13 @@ if __name__ == "__main__":
 
     df = cmm.get_main_df()
 
-    print(belongs_to_collection_df)
-    print(genres_df, genres_junction_df)
-    print(production_countries_df, production_countries_junction_df)
-    print(production_companies_df, production_companies_junction_df)
-    print(spoken_languages_df, spoken_languages_junction_df)
+    # print(belongs_to_collection_df)
+    # print(genres_df, genres_junction_df)
+    # print(production_countries_df, production_countries_junction_df)
+    # print(production_companies_df, production_companies_junction_df)
+    # print(spoken_languages_df, spoken_languages_junction_df)
+
+    # duplikaty są w ID filmu - usunąć
     print(df)
+    print(df[['id', 'original_title', 'release_date']].duplicated().sum())
+    # print(df[df[['original_title', 'release_date']].duplicated(keep=False)])
