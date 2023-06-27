@@ -3,8 +3,6 @@ import json
 from pathlib import Path
 from tools import make_junction_table
 
-pd.set_option('display.max_columns', None)
-# pd.set_option('display.max_rows', None)
 
 archive_path = Path(__file__).resolve().parent.parent.parent / "dataset" / "archive"
 

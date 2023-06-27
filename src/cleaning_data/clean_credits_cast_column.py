@@ -13,7 +13,6 @@ df = pd.read_csv(archive_path / "credits.csv", low_memory=False).drop_duplicates
 
 df.rename(columns={'id': 'film_id'}, inplace=True)
 
-
 cast_dict_keys = ("cast_id", "character", "credit_id", "gender", "id", "name", "order", "profile_path")
 
 converted = []
@@ -98,7 +97,7 @@ junction_df = make_junction_table(
     left_df=df,
     right_df=sub_df,
     merge_on=("cast", "original_value"),
-    old_index_names= ("index", "cast_id"),
+    old_index_names=("index", "cast_id"),
     new_index_names=("credits_fk", "cast_fk")
 )
 # print(junction_df)
@@ -112,6 +111,7 @@ junction_df = make_junction_table(
 # moje zmagania #
 #################
 
+# poniżej do usunięcia
 # r = df.merge(sub_df, how='left', left_on='cast', right_on='original_value')[['film_id', 'cast_id', 'character', 'gender', 'id', 'name', 'profile_path']]
 # print(r)
 # print(r[r[['film_id', 'character', 'name']].duplicated()][[ 'name']])
@@ -122,129 +122,98 @@ junction_df = make_junction_table(
 # data cleaning #
 #################
 
-sub_df.drop(sub_df.loc[sub_df.cast_id == 2059].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 4182].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 5503].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 26386].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 26387].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 33802].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 71915].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 85094].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 85095].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 85096].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 85099].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 96760].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 96761].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 96763].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 96765].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 106889].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 125230].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 141154].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 142087].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 146006].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 146007].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 146008].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 146009].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 146010].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 146011].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 157382].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 176252].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 180234].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 184604].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 190151].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 190378].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 194565].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 195967].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 200400].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 201104].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 201113].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 204718].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 212381].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 233409].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 250679].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 261009].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 263170].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 263217].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 272952].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 272960].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 282904].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 286214].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 289500].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 291556].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 297270].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 302492].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 304510].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 304509].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 327887].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 330469].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 333306].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 333307].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 340863].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 341563].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 342839].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 342840].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 342841].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 357038].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 359080].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 359852].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 359853].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 366055].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 374553].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 374554].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 374555].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 374556].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 374557].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 384468].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 384764].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 403130].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 410610].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 412112].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 414193].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 418860].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 436507].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 436834].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 440095].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 440098].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 440100].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 440101].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 440102].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 457781].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 461004].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 469770].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 470600].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 480658].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 483883].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 491523].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 497975].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 500734].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 506646].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 508405].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 508406].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 508427].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 515029].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 515143].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 521302].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 526423].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 527865].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 527866].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 527867].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 528558].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 530196].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 533095].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 537661].index, inplace=True)
-sub_df.drop(sub_df.loc[sub_df.cast_id == 545498].index, inplace=True)
+
+#### zamknąć w funkcji lub klasie od tąd -> usuwanie duplikatów z cast_id
+cast_ids_list = [2059, 4182, 5503, 26386, 26387, 33802, 71915, 85094, 85095, 85096, 85099, 96760, 96761, 96763, 96765,
+                 106889, 125230, 141154, 142087, 146006, 146007, 146008, 146009, 146010, 146011, 157382, 176252, 180234,
+                 184604, 190151, 190378, 194565, 195967, 200400, 201104, 201113, 204718, 212381, 233409, 250679, 261009,
+                 263170, 263217, 272952, 272960, 282904, 286214, 289500, 291556, 297270, 302492, 304510, 304509, 327887,
+                 330469, 333306, 333307, 340863, 341563, 342839, 342840, 342841, 357038, 359080, 359852, 359853, 366055,
+                 374553, 374554, 374555, 374556, 374557, 384468, 384764, 403130, 410610, 412112, 414193, 418860, 436507,
+                 436834, 440095, 440098, 440100, 440101, 440102, 457781, 461004, 469770, 470600, 480658, 483883, 491523,
+                 497975, 500734, 506646, 508405, 508406, 508427, 515029, 515143, 521302, 526423, 527865, 527866, 527867,
+                 528558, 530196, 533095, 537661, 545498]
+
+for id in cast_ids_list:
+    sub_df.drop(sub_df.loc[sub_df.cast_id == id].index, inplace=True)
+
+sub_df.reset_index(drop=True, inplace=True)
+sub_df = sub_df.drop('cast_id', axis=1).reset_index(names='cast_id')
+
+### do tąd
 
 
-#### po czyszczeniu zresetować indeks jako cast_id
-# sprawdzić czy są jeszcze gdzieś duplikaty w sub_df
+##################################
+# prepare df to match ERD tables #
+##################################
 
-print(sub_df[sub_df[['original_value', 'character', 'name']].duplicated(keep=False)])
-print(sub_df[sub_df[['original_value', 'id', 'character']].duplicated(keep=False)])
+# people df
+people_df = sub_df[['id', 'gender', 'name', 'profile_path']].drop_duplicates(ignore_index=True)
+
+# czyszczenie people df
+people_df.loc[people_df.id == 9779, 'name'] = 'Morris Chestnut'
+people_df.loc[people_df.id == 23764, 'name'] = 'Erika Eleniak'
+people_df.loc[people_df.id == 58646, 'name'] = 'Damian Chapa'
+people_df.loc[people_df.id == 1091312, 'name'] = 'Russ Clark'
+people_df.loc[people_df.id == 235722, 'name'] = 'Haruo Nakajima'
+people_df.loc[people_df.id == 85775, 'name'] = 'Dick Pinner'
+people_df.loc[people_df.id == 115772, 'name'] = 'Charles Tannen'
+people_df.loc[people_df.id == 87637, 'name'] = 'Masami Nagasawa'
+people_df.loc[people_df.id == 117642, 'name'] = 'Jason Momoa'
+people_df.loc[people_df.id == 67212, 'name'] = 'Tom Wu'
+people_df.loc[people_df.id == 78456, 'name'] = 'Kimbo Slice'
+people_df.loc[people_df.id == 87662, 'name'] = 'Issei Takahashi'
+people_df.loc[people_df.id == 74947, 'name'] = 'Kitty Zhang Yuqi'
+people_df.loc[people_df.id == 932764, 'name'] = 'Jung In-Sun'
+people_df.loc[people_df.id == 111690, 'name'] = 'Takako Matsu'
+people_df.loc[people_df.id == 132233, 'name'] = 'Tony Schiena'
+people_df.loc[people_df.id == 78809, 'name'] = 'Rashad Evans'
+people_df.loc[people_df.id == 99692, 'name'] = 'Liao Fan'
+people_df.loc[people_df.id == 72932, 'name'] = 'Ryuhei Matsuda'
+people_df.loc[people_df.id == 1785844, 'gender'] = 2
+people_df.loc[people_df.id == 78809, 'gender'] = 2
+people_df.loc[people_df.id == 70883, 'gender'] = 1
+people_df.loc[people_df.id == 191752, 'gender'] = 1
+people_df.loc[people_df.id == 4644, 'gender'] = 1
+people_df.loc[people_df.id == 47395, 'gender'] = 2
+people_df.loc[people_df.id == 1608740, 'gender'] = 2
+people_df.loc[people_df.id == 17199, 'gender'] = 2
+people_df.loc[people_df.id == 935841, 'gender'] = 2
+people_df.loc[people_df.id == 1135277, 'gender'] = 2
+people_df.loc[people_df.id == 114733, 'gender'] = 2
+people_df.loc[people_df.id == 6718, 'profile_path'] = '/fN9LyZnztco8Tk7NpV0JiGnFkIy.jpg'
+people_df.loc[people_df.id == 8241, 'profile_path'] = '/vsT0YQb3LSBH4nkUiWjx1ogSIXM.jpg'
+people_df.loc[people_df.id == 3363, 'profile_path'] = '/kI8j8WGjDay9ovWnoTrqvcKYtN3.jpg'
+people_df.loc[people_df.id == 136195, 'profile_path'] = '/6yVzZc5XAoaVBZ4JcK15NKBeGlH.jpg'
+people_df.loc[people_df.id == 7682, 'profile_path'] = '/yzh26eyKJBtORjLlz8nyLQT7C1d.jpg'
+people_df.loc[people_df.id == 936, 'profile_path'] = '/we10IusqRV1NHRtA68ftyck2N33.jpg'
+people_df.loc[people_df.id == 1634622, 'profile_path'] = '/xKFZXYUGZGZdiJSJOtEKhvMo7K2.jpg'
+people_df.loc[people_df.id == 70883, 'profile_path'] = '/sofDsjadyHeRiafPclN4i6TChir.jpg'
+people_df.loc[people_df.id == 1200780, 'profile_path'] = '/7Yn7BVgep48QNAf5cAjzMQl0a13.jpg'
+people_df.loc[people_df.id == 1608740, 'profile_path'] = '/cXb0xksR2SmuJEoUCOIr7NyBZRt.jpg'
+people_df.loc[people_df.id == 29368, 'profile_path'] = '/greQI4q5Cbpy0SUkZCHZ1tuaaAe.jpg'
+people_df.loc[people_df.id == 37028, 'profile_path'] = '/rkNC80zwfLwDAb23eXZuyZO0JOO.jpg'
+people_df.loc[people_df.id == 115647, 'profile_path'] = '/uNwvMOGvFhQKWqt0rYuT48KRxac.jpg'
+people_df.loc[people_df.id == 99888, 'profile_path'] = '/2ppMruL72FDz5Q0xIcGaFxwCDI6.jpg'
+people_df.loc[people_df.id == 29986, 'profile_path'] = '/88sD6UHbUsCuur3r0x1PXToFx6q.jpg'
+people_df.loc[people_df.id == 1135277, 'profile_path'] = '/prcO9VZBcQS4FhxATbVzDr1005A.jpg'
+people_df.loc[people_df.id == 145092, 'profile_path'] = '/fmR9dO5cxrcwk5bjENU4eNITgLi.jpg'
+people_df.loc[people_df.id == 56843, 'profile_path'] = '/tE7JkSuyv2N8vtEN0YypsCAxW9B.jpg'
+people_df.loc[people_df.id == 7547, 'profile_path'] = '/gvQKaVUjfmi8fnWIRKJbwd8UfRc.jpg'
+people_df.loc[people_df.id == 228167, 'profile_path'] = '/aPIAkjn75D1iYsgFJMvZ62WvMOx.jpg'
+people_df.loc[people_df.id == 51641, 'profile_path'] = '/pk3xrVZWlu0Adrkqwp61sojZ239.jpg'
+people_df.loc[people_df.id == 111690, 'profile_path'] = '/e1vaEiwuglqOYZXvbCX4KLgALeI.jpg'
+people_df.loc[people_df.id == 1331602, 'profile_path'] = '/mkgLRMZHgQQ4PM8KbidOACnorSc.jpg'
+people_df.loc[people_df.id == 70013, 'profile_path'] = '/7CTTjm8Wh2SKH6Cb4RIpNjjn1zn.jpg'
+people_df.loc[people_df.id == 212225, 'profile_path'] = '/mzeEB6ZDAE036Z2oh2ZIqzrzVic.jpg'
+people_df.loc[people_df.id == 128045, 'profile_path'] = '/v8h4Ypnu6YVHKER3R4u3THdGAq.jpg'
+people_df.loc[people_df.id == 104018, 'profile_path'] = '/yJk1tsIhEYhlJkDtcvhZIrwbToK.jpg'
 
 
+people_df = people_df.drop_duplicates(ignore_index=True)
 
-# r = sub_df.loc[(sub_df.character == '') & (sub_df.name == 'Gábor Jászberényi')].to_dict()
-# print(r)
-# print(r['original_value'][527864])
-# print(r['original_value'][527865])
+print(people_df[people_df['id'].duplicated(keep=False)])
+# print(people_df[people_df[['name', 'id']].duplicated(keep=False)])
+# print(people_df[people_df['profile_path'].duplicated(keep=False)])
+
 
