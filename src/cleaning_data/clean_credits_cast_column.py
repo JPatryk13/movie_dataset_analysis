@@ -137,6 +137,14 @@ cast_ids_list = [2059, 4182, 5503, 26386, 26387, 33802, 71915, 85094, 85095, 850
 for id in cast_ids_list:
     sub_df.drop(sub_df.loc[sub_df.cast_id == id].index, inplace=True)
 
+# sprawdzić czy sub_df ma wciąż duplikaty
+sub_df.loc[sub_df.id == 1216756, 'id'] = 113387
+sub_df.loc[sub_df.id == 1127849, 'id'] = 33608
+sub_df.loc[sub_df.id == 179942, 'id'] = 1216483
+sub_df.loc[sub_df.id == 1234191, 'id'] = 932097
+sub_df.loc[sub_df.id == 1070406, 'id'] = 555778
+sub_df.loc[sub_df.id == 932097, 'name'] = 'Celestina Aladekoba'
+
 sub_df.reset_index(drop=True, inplace=True)
 sub_df = sub_df.drop('cast_id', axis=1).reset_index(names='cast_id')
 
@@ -170,16 +178,22 @@ people_df.loc[people_df.id == 132233, 'name'] = 'Tony Schiena'
 people_df.loc[people_df.id == 78809, 'name'] = 'Rashad Evans'
 people_df.loc[people_df.id == 99692, 'name'] = 'Liao Fan'
 people_df.loc[people_df.id == 72932, 'name'] = 'Ryuhei Matsuda'
+people_df.loc[people_df.id == 555778, 'name'] = 'Pongsatorn Jongwilak'
 people_df.loc[people_df.id == 1785844, 'gender'] = 2
 people_df.loc[people_df.id == 78809, 'gender'] = 2
 people_df.loc[people_df.id == 70883, 'gender'] = 1
 people_df.loc[people_df.id == 191752, 'gender'] = 1
+people_df.loc[people_df.id == 1216483, 'gender'] = 1
+people_df.loc[people_df.id == 1104340, 'gender'] = 1
+people_df.loc[people_df.id == 262075, 'gender'] = 1
 people_df.loc[people_df.id == 4644, 'gender'] = 1
 people_df.loc[people_df.id == 47395, 'gender'] = 2
 people_df.loc[people_df.id == 1608740, 'gender'] = 2
+people_df.loc[people_df.id == 555778, 'gender'] = 2
 people_df.loc[people_df.id == 17199, 'gender'] = 2
 people_df.loc[people_df.id == 935841, 'gender'] = 2
 people_df.loc[people_df.id == 1135277, 'gender'] = 2
+people_df.loc[people_df.id == 231784, 'gender'] = 2
 people_df.loc[people_df.id == 114733, 'gender'] = 2
 people_df.loc[people_df.id == 6718, 'profile_path'] = '/fN9LyZnztco8Tk7NpV0JiGnFkIy.jpg'
 people_df.loc[people_df.id == 8241, 'profile_path'] = '/vsT0YQb3LSBH4nkUiWjx1ogSIXM.jpg'
@@ -208,12 +222,49 @@ people_df.loc[people_df.id == 70013, 'profile_path'] = '/7CTTjm8Wh2SKH6Cb4RIpNjj
 people_df.loc[people_df.id == 212225, 'profile_path'] = '/mzeEB6ZDAE036Z2oh2ZIqzrzVic.jpg'
 people_df.loc[people_df.id == 128045, 'profile_path'] = '/v8h4Ypnu6YVHKER3R4u3THdGAq.jpg'
 people_df.loc[people_df.id == 104018, 'profile_path'] = '/yJk1tsIhEYhlJkDtcvhZIrwbToK.jpg'
+people_df.loc[people_df.id == 37430, 'profile_path'] = '/ls9gOUs7nSZyutuL5MULC1PZftN.jpg'
+people_df.loc[people_df.id == 52701, 'profile_path'] = '/dGAnHPYdQJ9FjddU855aJ7xjKwS.jpg'
+people_df.loc[people_df.id == 161310, 'profile_path'] = '/r3nMsFTaVkQ7XPncbvrJBVbqhUa.jpg'
+people_df.loc[people_df.id == 139567, 'profile_path'] = '/mYGbPBzjepkpjWDbUzVhXiFGrFe.jpg'
+people_df.loc[people_df.id == 1153503, 'profile_path'] = '/byMVHHhtaMvLFSThKKhuqAHOOIl.jpg'
+people_df.loc[people_df.id == 145087, 'profile_path'] = '/4WKsWWGFv8FEL4aowzthMT8RqCH.jpg'
+people_df.loc[people_df.id == 145086, 'profile_path'] = '/tSFiZ95afNa64EsxPVXteRrwPJz.jpg'
+people_df.loc[people_df.id == 932097, 'profile_path'] = '/vzSaw247wxsUKYoQa647pUeMKaQ.jpg'
+people_df.loc[people_df.id == 231784, 'profile_path'] = '/tG2MNITHmcJ0RsB8sApGZ9zrIcT.jpg'
+people_df.loc[people_df.id == 1104340, 'profile_path'] = '/8wdFxKcaBx98sIXOZUAhelQuv7M.jpg'
+people_df.loc[people_df.id == 262075, 'profile_path'] = '/gT8xNBN2xhP2JqN44qklXqUshHK.jpg'
+people_df.loc[people_df.id == 1747946, 'profile_path'] = '/9DfqsBLKvxCgMRSprlo2isMFpV5.jpg'
+people_df.loc[people_df.id == 1747947, 'profile_path'] = '/29RUAACDGXopRfJ78d41RctDIf0.jpg'
+people_df.loc[people_df.id == 555778, 'profile_path'] = '/AqOS0w0QhrFsgVxaaO1vV8v8MfS.jpg'
+people_df.loc[people_df.id == 1301102, 'profile_path'] = None
+people_df.loc[people_df.id == 990654, 'profile_path'] = None
+people_df.loc[people_df.id == 976019, 'profile_path'] = None
+people_df.loc[people_df.id == 131606, 'profile_path'] = None
+people_df.loc[people_df.id == 131605, 'profile_path'] = None
+people_df.loc[people_df.id == 107221, 'profile_path'] = None
+people_df.loc[people_df.id == 88471, 'profile_path'] = None
 
+
+# posprawdzać czy w people_df nie ma więcej duplikatów - czy są unikalne rekordy
+# przerzucić to czyszczenie go jakiejś funkcji
 
 people_df = people_df.drop_duplicates(ignore_index=True)
+print(people_df)
+print(people_df[people_df['name'].duplicated(keep=False)])
+print(people_df[people_df[['name', 'profile_path']].duplicated(keep=False)])
 
-print(people_df[people_df['id'].duplicated(keep=False)])
-# print(people_df[people_df[['name', 'id']].duplicated(keep=False)])
-# print(people_df[people_df['profile_path'].duplicated(keep=False)])
 
+nulls = people_df[~people_df.profile_path.isnull()]
+print(nulls[nulls['profile_path'].duplicated(keep=False)])
+print(nulls['profile_path'].duplicated(keep=False).sum())
 
+r = nulls.loc[nulls.profile_path == '/uS4a3epqXVtjTUGRR37zG0yOQFS.jpg']
+# print(r)
+
+x = people_df.loc[people_df.name == 'Steve Martin']
+y = people_df.loc[people_df.name == 'John Marshall']
+z = sub_df.loc[sub_df.id == 1301102]
+print(x)
+print(y)
+# print(z)
+#
