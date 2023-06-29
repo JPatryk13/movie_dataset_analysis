@@ -111,12 +111,6 @@ junction_df = make_junction_table(
 # moje zmagania #
 #################
 
-# poniżej do usunięcia
-# r = df.merge(sub_df, how='left', left_on='cast', right_on='original_value')[['film_id', 'cast_id', 'character', 'gender', 'id', 'name', 'profile_path']]
-# print(r)
-# print(r[r[['film_id', 'character', 'name']].duplicated()][[ 'name']])
-# print(sub_df)
-
 
 #################
 # data cleaning #
@@ -145,6 +139,11 @@ sub_df.loc[sub_df.id == 1234191, 'id'] = 932097
 sub_df.loc[sub_df.id == 1070406, 'id'] = 555778
 sub_df.loc[sub_df.id == 932097, 'name'] = 'Celestina Aladekoba'
 
+# replace null and empty string values -> ważne
+sub_df['character'] = sub_df['character'].apply(lambda x: 'UNSPECIFIED' if x is None or x == '' else x)
+
+
+
 sub_df.reset_index(drop=True, inplace=True)
 sub_df = sub_df.drop('cast_id', axis=1).reset_index(names='cast_id')
 
@@ -155,7 +154,7 @@ sub_df = sub_df.drop('cast_id', axis=1).reset_index(names='cast_id')
 # prepare df to match ERD tables #
 ##################################
 
-# people df
+# people df -> done, poczyszczone przerzucić tylko do jakiejść funkcji
 people_df = sub_df[['id', 'gender', 'name', 'profile_path']].drop_duplicates(ignore_index=True)
 
 # czyszczenie people df
@@ -244,27 +243,14 @@ people_df.loc[people_df.id == 131605, 'profile_path'] = None
 people_df.loc[people_df.id == 107221, 'profile_path'] = None
 people_df.loc[people_df.id == 88471, 'profile_path'] = None
 
-
-# posprawdzać czy w people_df nie ma więcej duplikatów - czy są unikalne rekordy
-# przerzucić to czyszczenie go jakiejś funkcji
-
 people_df = people_df.drop_duplicates(ignore_index=True)
-print(people_df)
-print(people_df[people_df['name'].duplicated(keep=False)])
-print(people_df[people_df[['name', 'profile_path']].duplicated(keep=False)])
+
+### przerzucić to powyżej czyszczenie do jakiejś funkcji
 
 
-nulls = people_df[~people_df.profile_path.isnull()]
-print(nulls[nulls['profile_path'].duplicated(keep=False)])
-print(nulls['profile_path'].duplicated(keep=False).sum())
+# cast_df
+cast_df = sub_df[['cast_id', 'id', 'character']]
 
-r = nulls.loc[nulls.profile_path == '/uS4a3epqXVtjTUGRR37zG0yOQFS.jpg']
-# print(r)
+cast_movies_junction = sub_df.merge(df, how='left', left_on='original_value', right_on='cast')[['film_id', 'cast_id']]
 
-x = people_df.loc[people_df.name == 'Steve Martin']
-y = people_df.loc[people_df.name == 'John Marshall']
-z = sub_df.loc[sub_df.id == 1301102]
-print(x)
-print(y)
-# print(z)
-#
+print(cast_movies_junction)
