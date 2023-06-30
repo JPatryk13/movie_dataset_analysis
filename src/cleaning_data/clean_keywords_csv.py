@@ -5,7 +5,7 @@ from pathlib import Path
 
 archive_path = Path(__file__).resolve().parent.parent.parent / "dataset" / "archive"
 
-df = pd.read_csv(archive_path / "keywords.csv", low_memory=False).drop_duplicates(ignore_index=True)#
+df = pd.read_csv(archive_path / "keywords.csv", low_memory=False).drop_duplicates(ignore_index=True)
 
 
 # convert string representation of list to actual list type in keywords column -> cleaning
