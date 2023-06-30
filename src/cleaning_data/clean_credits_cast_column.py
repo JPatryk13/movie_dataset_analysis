@@ -154,7 +154,7 @@ sub_df = sub_df.drop('cast_id', axis=1).reset_index(names='cast_id')
 # prepare df to match ERD tables #
 ##################################
 
-# people df -> done, poczyszczone przerzucić tylko do jakiejść funkcji
+# people df -> done, poczyszczone przerzucić tylko do jakiejść funkcji + złączyć z crew people
 people_df = sub_df[['id', 'gender', 'name', 'profile_path']].drop_duplicates(ignore_index=True)
 
 # czyszczenie people df
@@ -248,9 +248,10 @@ people_df = people_df.drop_duplicates(ignore_index=True)
 ### przerzucić to powyżej czyszczenie do jakiejś funkcji
 
 
-# cast_df
+# cast_df -> done
 cast_df = sub_df[['cast_id', 'id', 'character']]
 
+# cast_movies_junction -> done
 cast_movies_junction = sub_df.merge(df, how='left', left_on='original_value', right_on='cast')[['film_id', 'cast_id']]
 
 print(cast_movies_junction)
