@@ -3,7 +3,6 @@ import json
 from pathlib import Path
 from tools import make_junction_table
 
-
 archive_path = Path(__file__).resolve().parent.parent.parent / "dataset" / "archive"
 
 df = pd.read_csv(archive_path / "credits.csv", low_memory=False)
@@ -33,7 +32,6 @@ crew_film_id_df = pd.json_normalize(
     meta_prefix='film_'
 ).drop(['credit_id'], axis=1).drop_duplicates(ignore_index=True)
 
-
 ############
 # CLEANING #
 ############
@@ -50,7 +48,6 @@ crew_film_id_df.loc[crew_film_id_df.name == 'Ka-Fai Cheung', 'name'] = 'Cheung K
 crew_film_id_df.drop(crew_film_id_df.loc[crew_film_id_df.id == 1339312].index, inplace=True)
 crew_film_id_df.drop(crew_film_id_df.loc[crew_film_id_df.id == 572046].index, inplace=True)
 
-
 ##################################
 # prepare df to match ERD tables #
 ##################################
@@ -58,17 +55,18 @@ crew_film_id_df.drop(crew_film_id_df.loc[crew_film_id_df.id == 572046].index, in
 # only_crew_df - used to merge with other dataframes -> done
 only_crew = crew_film_id_df.drop(['film_id'], axis=1).drop_duplicates(ignore_index=True).reset_index(names='crew_id')
 
-# crew df -> done
+# crew df -> done, brak nulls, typy zgodny int
 crew_df = only_crew[['crew_id', 'id']]
 
-# people df  -> done only for crew column (add cast people to this df)
+# people df  -> done only for crew column (add cast people to this df), typy zgodne, brak nulls - tylko w profile path
+# brak duplikatów
 people_df = only_crew[['id', 'gender', 'name', 'profile_path']].drop_duplicates(ignore_index=True)
 
 # departments df -> done
 departments_df = only_crew[['department']].drop_duplicates(ignore_index=True).reset_index(
     names='department_id')
 
-# jobs df -> done
+# jobs df -> done, no duplicates, correct dtypes
 jobs_df = only_crew[['job']].drop_duplicates(ignore_index=True).reset_index(names='job_id')
 
 # departments_jobs_junction df -> done
@@ -85,20 +83,11 @@ crew_departments_junction = make_junction_table(
     new_index_names=('crew_fk', 'department_fk')
 )
 
-# crew_movies_junction -> done
+# crew_movies_junction -> done, correct types
 columns_to_merge = ['department', 'gender', 'id', 'job', 'name', 'profile_path']
-crew_movies_junction = crew_film_id_df.merge(only_crew, how='left', on=columns_to_merge)[['film_id', 'crew_id']]
+crew_movies_junction = crew_film_id_df.merge(only_crew, how='left', on=columns_to_merge)[['film_id', 'crew_id']].astype(
+    {'film_id': 'int64'})
 
+# cast_df -> done: in other py file
 
-# cast_df -> not done: use from clean_creadits_cast_column.py file
-
-# people from cast add to people_df
-
-# cast_movies_junction -> not done
-
-
-####################
-# ERRORS TO REPAIR #
-####################
-
-# None for now
+# move people from cast add to people_df
