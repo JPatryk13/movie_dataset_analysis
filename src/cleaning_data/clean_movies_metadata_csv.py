@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from pathlib import Path
 from tools import nested_dict_col_to_df, make_junction_table, unique_row_unique_index
@@ -5,7 +6,6 @@ from typing import Literal
 
 
 class CleanMoviesMetadata:
-
     COL_NAMES = Literal[
         "belongs_to_collection",
         "genres",
@@ -102,7 +102,6 @@ class CleanMoviesMetadata:
 
 
 if __name__ == "__main__":
-
     pd.set_option('display.max_columns', 500)
     pd.set_option('display.width', 1000)
 
@@ -122,7 +121,43 @@ if __name__ == "__main__":
     # print(production_companies_df, production_companies_junction_df)
     # print(spoken_languages_df, spoken_languages_junction_df)
 
-    # duplikaty są w ID filmu - usunąć
-    print(df)
-    print(df[['id', 'original_title', 'release_date']].duplicated().sum())
-    # print(df[df[['original_title', 'release_date']].duplicated(keep=False)])
+############################
+# moje zmagania i cleaning #
+############################
+
+# drop unnecessary columns
+df.drop('popularity', axis=1, inplace=True)
+df.drop('vote_average', axis=1, inplace=True)
+df.drop('vote_count', axis=1, inplace=True)
+
+# drop mess data
+df.drop(df.loc[df.id == '1997-08-20'].index, inplace=True)
+df.drop(df.loc[df.id == '2012-09-29'].index, inplace=True)
+df.drop(df.loc[df.id == '2014-01-01'].index, inplace=True)
+
+# runtime może być powyżej kilku godzin bo są to seriale i czas to łączna ich długość odcinków -> notatka
+
+# convert string date to date object
+df['release_date'] = pd.to_datetime(df['release_date']).dt.date
+
+# converting to appropriate data types of columns
+df = df.rename(columns={'id': 'film_id'}).astype(
+    {'adult': 'bool', 'budget': 'int64', 'film_id': 'int64', 'original_language': 'category', 'status': 'category',
+     'video': 'bool'})
+
+print(df[df.film_id.duplicated()].head())
+print(df.film_id.duplicated().sum())
+print(df.dtypes)
+
+
+
+
+
+##################################
+# prepare df to match ERD tables #
+##################################
+
+# duplikaty są w ID filmu - usunąć
+# print(df)
+# print(df[['id', 'original_title', 'release_date']].duplicated().sum())
+# print(df[df[['original_title', 'release_date']].duplicated(keep=False)])
