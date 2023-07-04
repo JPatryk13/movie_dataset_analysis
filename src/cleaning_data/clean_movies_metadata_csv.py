@@ -121,9 +121,10 @@ if __name__ == "__main__":
     # print(production_companies_df, production_companies_junction_df)
     # print(spoken_languages_df, spoken_languages_junction_df)
 
-############################
-# moje zmagania i cleaning #
-############################
+##############################
+#      moje zmagania         #
+# cleaning i conversja typów #
+##############################
 
 # drop unnecessary columns
 df.drop('popularity', axis=1, inplace=True)
@@ -131,9 +132,9 @@ df.drop('vote_average', axis=1, inplace=True)
 df.drop('vote_count', axis=1, inplace=True)
 
 # drop mess data
-df.drop(df.loc[df.id == '1997-08-20'].index, inplace=True)
-df.drop(df.loc[df.id == '2012-09-29'].index, inplace=True)
-df.drop(df.loc[df.id == '2014-01-01'].index, inplace=True)
+df.drop(df.loc[df['id'] == '1997-08-20'].index, inplace=True)
+df.drop(df.loc[df['id'] == '2012-09-29'].index, inplace=True)
+df.drop(df.loc[df['id'] == '2014-01-01'].index, inplace=True)
 
 # runtime może być powyżej kilku godzin bo są to seriale i czas to łączna ich długość odcinków -> notatka
 
@@ -145,19 +146,16 @@ df = df.rename(columns={'id': 'film_id'}).astype(
     {'adult': 'bool', 'budget': 'int64', 'film_id': 'int64', 'original_language': 'category', 'status': 'category',
      'video': 'bool'})
 
-print(df[df.film_id.duplicated()].head())
-print(df.film_id.duplicated().sum())
-print(df.dtypes)
-
-
-
-
 
 ##################################
 # prepare df to match ERD tables #
 ##################################
 
-# duplikaty są w ID filmu - usunąć
-# print(df)
-# print(df[['id', 'original_title', 'release_date']].duplicated().sum())
-# print(df[df[['original_title', 'release_date']].duplicated(keep=False)])
+# drop duplicates and set index film_id as index (PK for movies df) and index ascending
+df.drop('index', axis=1, inplace=True)
+movies_df = df.drop_duplicates(ignore_index=True).set_index('film_id').sort_index()
+
+# powyższe czyszczenie movies_df przerzucić albo do klasy konstruktora albo do oddzielnego pliku tak aby dalszych modyfikacji dokonywać na czystym już pliku
+# genres -> działamy trzeba sprawdzić czy index movie_fk odpowiada movie id + dropnąć index w genres i ustawić id jako nowy index jako genre_id
+print(genres_df)
+print(genres_junction_df)
