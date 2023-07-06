@@ -12,8 +12,8 @@ class CleanMoviesMetadata:
             low_memory=False
         ).drop_duplicates(ignore_index=True).rename(columns={'id': 'film_id'})
 
-    def get_main_df(self):
-        self.df = self.df.drop_duplicates(ignore_index=True)#.set_index('film_id').sort_index()
+    def get_movies_df(self):
+        self.df = self.df.drop_duplicates(ignore_index=True)  # .set_index('film_id').sort_index()
         return self.df
 
     def drop_unnecessary_columns(self, columns: list | str) -> None:
@@ -38,7 +38,7 @@ class CleanMoviesMetadata:
         return None
 
 
-#### odpalamy
+#### napisać funkcję zwracającą czysty movies_df
 if __name__ == "__main__":
     pd.set_option('display.max_columns', 500)
     pd.set_option('display.width', 1000)
@@ -50,6 +50,6 @@ if __name__ == "__main__":
     cmm.drop_faulty_ids(wrong_ids=wrong_id_list)
     cmm.data_types_conversion()
 
-    df = cmm.get_main_df()
+    df = cmm.get_movies_df()
 
     print(df)
