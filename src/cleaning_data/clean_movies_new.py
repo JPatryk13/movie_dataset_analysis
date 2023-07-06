@@ -43,8 +43,6 @@ df = df.rename(columns={'id': 'film_id'}).astype(
 ##################################
 
 # drop duplicates and set index film_id as index (PK for movies df) and index ascending
-# movies_df -> not done!
-# movies_df = df.drop_duplicates(ignore_index=True).reset_index()  # .set_index('film_id').sort_index()
 
 # btc_df
 df['belongs_to_collection'] = df['belongs_to_collection'].fillna('[]')
@@ -76,11 +74,20 @@ def extract_df_from_col(col_name, index_name=None):
         json.loads(df_to_json),
         record_path=col_name,
         meta='film_id',
-    ).rename(columns={'id': f'{index_name}_id'}).astype({f'{index_name}_id': 'Int64', 'film_id': 'Int64'})
+    )
 
-    junction_df = normalized_df[['film_id', f'{index_name}_id']]
-    transformed_df = normalized_df.drop('film_id', axis=1).drop_duplicates(ignore_index=True).sort_values(
-        f'{index_name}_id')
+    if col_name not in ['production_countries', 'spoken_languages']:
+        normalized_df = normalized_df.rename(columns={'id': f'{index_name}_id'}).astype(
+            {f'{index_name}_id': 'Int64', 'film_id': 'Int64'})
+
+        junction_df = normalized_df[['film_id', f'{index_name}_id']]
+        transformed_df = normalized_df.drop('film_id', axis=1).drop_duplicates(ignore_index=True).sort_values(
+            f'{index_name}_id')
+
+    else:
+        junction_df = normalized_df[['film_id', f'{index_name}']]
+        transformed_df = normalized_df.drop('film_id', axis=1).drop_duplicates(ignore_index=True).sort_values(
+            f'{index_name}')
 
     return transformed_df, junction_df
 
@@ -92,7 +99,22 @@ genres_df, genres_movies_junction = extract_df_from_col('genres')
 production_companies_df, production_companies_junction = extract_df_from_col('production_companies', 'company')
 production_companies_df = production_companies_df[['company_id', 'name']]
 
-### production_countries_df and production_countries_junction -> do zrobienia
+### production_countries_df and production_countries_junction -> done
+production_countries_df, production_countries_junction = extract_df_from_col('production_countries', 'iso_3166_1')
+production_countries_df = production_countries_df.rename(columns={'iso_3166_1': 'country_code'}).astype(
+    {'country_code': 'category'})
+production_countries_junction = production_countries_junction.rename(columns={'iso_3166_1': 'country_code'}).astype(
+    {'country_code': 'category', 'film_id': 'Int64'})
+
+### spoken_languages_df and languages_movies_junction -> done + jak mi się będzie chciało to ręcznie pododawać brakujące name w językach
+spoken_languages_df, languages_movies_junction = extract_df_from_col('spoken_languages', 'iso_639_1')
+spoken_languages_df = spoken_languages_df.rename(columns={'iso_639_1': 'language_code'}).astype(
+    {'language_code': 'category'})
+languages_movies_junction = languages_movies_junction.rename(columns={'iso_639_1': 'language_code'}).astype(
+    {'language_code': 'category', 'film_id': 'Int64'})
+
+# movies_df -> done + sprawdzić czy set_index wstawi index do bazy danych jako PK
+movies_df = df.drop(['index', 'genres', 'production_companies', 'production_countries', 'spoken_languages'],
+                    axis=1).rename(columns={'poster_path_x': 'poster_path'})#.set_index('film_id').sort_index()
 
 
-# print(df)
