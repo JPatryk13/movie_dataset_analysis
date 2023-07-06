@@ -20,14 +20,13 @@ df = pd.read_csv(
 ##############################
 
 # drop unnecessary columns
-df.drop('popularity', axis=1, inplace=True)
-df.drop('vote_average', axis=1, inplace=True)
-df.drop('vote_count', axis=1, inplace=True)
+df.drop(['popularity', 'vote_average', 'vote_count'], axis=1, inplace=True)
 
 # drop mess data
-df.drop(df.loc[df['id'] == '1997-08-20'].index, inplace=True)
-df.drop(df.loc[df['id'] == '2012-09-29'].index, inplace=True)
-df.drop(df.loc[df['id'] == '2014-01-01'].index, inplace=True)
+wrong_ids = ['1997-08-20', '2012-09-29', '2014-01-01']
+
+for film_id in wrong_ids:
+    df.drop(df.loc[df['id'] == film_id].index, inplace=True)
 
 # convert string date to date object
 df['release_date'] = pd.to_datetime(df['release_date']).dt.date
@@ -115,6 +114,8 @@ languages_movies_junction = languages_movies_junction.rename(columns={'iso_639_1
 
 # movies_df -> done + sprawdzić czy set_index wstawi index do bazy danych jako PK
 movies_df = df.drop(['index', 'genres', 'production_companies', 'production_countries', 'spoken_languages'],
-                    axis=1).rename(columns={'poster_path_x': 'poster_path'})#.set_index('film_id').sort_index()
+                    axis=1).rename(columns={'poster_path_x': 'poster_path'})  # .set_index('film_id').sort_index()
 
-
+########################
+# teraz refaktoryzacja #
+########################
