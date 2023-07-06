@@ -10,14 +10,32 @@ class CleanMoviesMetadata:
         self.df = pd.read_csv(
             archive_path / "movies_metadata.csv",
             low_memory=False
-        ).drop_duplicates(ignore_index=True)
+        ).drop_duplicates(ignore_index=True).rename(columns={'id': 'film_id'})
 
     def get_main_df(self):
+        self.df = self.df.drop_duplicates(ignore_index=True)#.set_index('film_id').sort_index()
         return self.df
 
-    def drop_unnecessary_columns(self, columns: list | str) -> pd.DataFrame:
+    def drop_unnecessary_columns(self, columns: list | str) -> None:
         self.df.drop(columns, axis=1, inplace=True)
-        return self.df
+        return None
+
+    def list_faulty_ids(self) -> list:
+        wrong_ids = [film_id for film_id in self.df['film_id'] if not film_id.isdigit()]
+        return wrong_ids
+
+    def drop_faulty_ids(self, wrong_ids: list) -> None:
+        for film_id in wrong_ids:
+            self.df.drop(self.df.loc[self.df['film_id'] == film_id].index, inplace=True)
+        return None
+
+    def data_types_conversion(self):
+        self.df['release_date'] = pd.to_datetime(self.df['release_date']).dt.date
+
+        self.df = self.df.astype(
+            {'adult': 'bool', 'budget': 'Int64', 'film_id': 'Int64', 'original_language': 'category',
+             'revenue': 'Int64', 'runtime': 'Int64', 'status': 'category', 'video': 'bool'})
+        return None
 
 
 #### odpalamy
@@ -26,6 +44,12 @@ if __name__ == "__main__":
     pd.set_option('display.width', 1000)
 
     cmm = CleanMoviesMetadata()
+    wrong_id_list = cmm.list_faulty_ids()
 
-    # print(cmm.get_main_df())
-    print(cmm.drop_unnecessary_columns(columns=['popularity', 'vote_average', 'vote_count']))
+    cmm.drop_unnecessary_columns(columns=['popularity', 'vote_average', 'vote_count'])
+    cmm.drop_faulty_ids(wrong_ids=wrong_id_list)
+    cmm.data_types_conversion()
+
+    df = cmm.get_main_df()
+
+    print(df)
