@@ -61,11 +61,14 @@ class MakeDataframesFromMoviesFile:
 
         return transformed_df, junction_df
 
-    def poprawiony_movie_frejmik(self):
-        # movies_df = df.drop(['index', 'genres', 'production_companies', 'production_countries', 'spoken_languages'],
-        #                     axis=1).rename(
-        #     columns={'poster_path_x': 'poster_path'})  # .set_index('film_id').sort_index()
-        pass
+    def final_transformation_movies_df(self):
+        # drop columns with nested list of dicts
+        self.df = self.df.drop(['genres', 'production_companies', 'production_countries', 'spoken_languages'],
+                               axis=1).rename(columns={'poster_path_x': 'poster_path'})  # .set_index('film_id').sort_index()
+        return None
+
+    def get_movies_df(self) -> pd.DataFrame:
+        return self.df  # .set_index('film_id').sort_index()
 
 
 if __name__ == "__main__":
@@ -80,10 +83,10 @@ if __name__ == "__main__":
     cmm.drop_faulty_ids(wrong_ids=wrong_id_list)
     cmm.data_types_conversion()
 
-    movies_df = cmm.get_movies_df()
+    clean_movies = cmm.get_movies_df()
 
     ### transformation ###
-    movies_object = MakeDataframesFromMoviesFile(movies_df)
+    movies_object = MakeDataframesFromMoviesFile(clean_movies)
 
     collections_df = movies_object.make_collections_df()
 
@@ -105,9 +108,13 @@ if __name__ == "__main__":
         new_index_name='language_code',
         category_index='iso_639_1')
 
+    movies_object.final_transformation_movies_df()
+
+    movies_df = movies_object.get_movies_df()
+
     ### printowanie wszystkich dfów ###
 
-    print(movies_df)
+    # print(movies_df)
     # print(collections_df)
     # print(genres_df)
     # print(genres_movies_junction)
