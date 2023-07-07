@@ -2,10 +2,11 @@ import pandas as pd
 import json
 from tools import nested_dict_col_to_df
 from ast import literal_eval
+from pathlib import Path
 from cleaning import CleanMoviesMetadata
 
 
-class MakeDataframesFromMoviesFile:
+class MakeDataframesFromMovies:
     def __init__(self, df: pd.DataFrame):
         self.df = df
 
@@ -64,55 +65,87 @@ class MakeDataframesFromMoviesFile:
     def final_transformation_movies_df(self):
         # drop columns with nested list of dicts
         self.df = self.df.drop(['genres', 'production_companies', 'production_countries', 'spoken_languages'],
-                               axis=1).rename(columns={'poster_path_x': 'poster_path'})  # .set_index('film_id').sort_index()
+                               axis=1).rename(
+            columns={'poster_path_x': 'poster_path'})  # .set_index('film_id').sort_index()
         return None
 
     def get_movies_df(self) -> pd.DataFrame:
         return self.df  # .set_index('film_id').sort_index()
 
 
+class MakeDataframeFromRatings:
+
+    def __init__(self):
+        archive_path = Path(__file__).resolve().parent.parent.parent / "dataset" / "archive"
+
+        self.df = pd.read_csv(archive_path / "ratings.csv", low_memory=False).drop_duplicates(
+            ignore_index=True).rename(columns={'userId': 'user_id', 'movieId': 'movie_id'}).sort_values('user_id')
+
+    def extract_date_and_time(self):
+        # convert timestamp column to date time object representing date and time
+        self.df['timestamp'] = pd.to_datetime(self.df['timestamp'], unit='s')
+
+        self.df['date'] = self.df['timestamp'].dt.date
+        self.df['time'] = self.df['timestamp'].dt.time
+
+        self.df.drop('timestamp', axis=1, inplace=True)
+
+        return None
+
+    def get_ratings_df(self) -> pd.DataFrame:
+        return self.df
+
+
 if __name__ == "__main__":
-    ### cleaning ###
-    pd.set_option('display.max_columns', 500)
-    pd.set_option('display.width', 1000)
+    ### cleaning movies ###
+    # pd.set_option('display.max_columns', 500)
+    # pd.set_option('display.width', 1000)
+    #
+    # cmm = CleanMoviesMetadata()
+    # wrong_id_list = cmm.list_faulty_ids()
+    #
+    # cmm.drop_unnecessary_columns(columns=['popularity', 'vote_average', 'vote_count'])
+    # cmm.drop_faulty_ids(wrong_ids=wrong_id_list)
+    # cmm.data_types_conversion()
+    #
+    # clean_movies = cmm.get_movies_df()
 
-    cmm = CleanMoviesMetadata()
-    wrong_id_list = cmm.list_faulty_ids()
+    ### transformation movies ###
+    # mdfm = MakeDataframesFromMovies(clean_movies)
+    #
+    # collections_df = mdfm.make_collections_df()
+    #
+    # genres_df, genres_movies_junction = mdfm.extract_df_from_col(col_name='genres')
+    #
+    # production_companies_df, companies_movies_junction = mdfm.extract_df_from_col(
+    #     col_name='production_companies',
+    #     new_index_name='company')
+    #
+    # production_companies_df = production_companies_df[['company_id', 'name']]
+    #
+    # production_countries_df, countries_movies_junction = mdfm.extract_df_from_col(
+    #     col_name='production_countries',
+    #     new_index_name='country_code',
+    #     category_index='iso_3166_1')
+    #
+    # spoken_languages_df, languages_movies_junction = mdfm.extract_df_from_col(
+    #     col_name='spoken_languages',
+    #     new_index_name='language_code',
+    #     category_index='iso_639_1')
+    #
+    # mdfm.final_transformation_movies_df()
+    #
+    # movies_df = mdfm.get_movies_df()
 
-    cmm.drop_unnecessary_columns(columns=['popularity', 'vote_average', 'vote_count'])
-    cmm.drop_faulty_ids(wrong_ids=wrong_id_list)
-    cmm.data_types_conversion()
+    ### transformation ratings ###
 
-    clean_movies = cmm.get_movies_df()
+    mdfr = MakeDataframeFromRatings()
 
-    ### transformation ###
-    movies_object = MakeDataframesFromMoviesFile(clean_movies)
+    mdfr.extract_date_and_time()
 
-    collections_df = movies_object.make_collections_df()
+    ratings_df = mdfr.get_ratings_df()
 
-    genres_df, genres_movies_junction = movies_object.extract_df_from_col(col_name='genres')
-
-    production_companies_df, companies_movies_junction = movies_object.extract_df_from_col(
-        col_name='production_companies',
-        new_index_name='company')
-
-    production_companies_df = production_companies_df[['company_id', 'name']]
-
-    production_countries_df, countries_movies_junction = movies_object.extract_df_from_col(
-        col_name='production_countries',
-        new_index_name='country_code',
-        category_index='iso_3166_1')
-
-    spoken_languages_df, languages_movies_junction = movies_object.extract_df_from_col(
-        col_name='spoken_languages',
-        new_index_name='language_code',
-        category_index='iso_639_1')
-
-    movies_object.final_transformation_movies_df()
-
-    movies_df = movies_object.get_movies_df()
-
-    ### printowanie wszystkich dfów ###
+    ### printowanie movies dfów ###
 
     # print(movies_df)
     # print(collections_df)
@@ -124,3 +157,7 @@ if __name__ == "__main__":
     # print(countries_movies_junction)
     # print(spoken_languages_df)
     # print(languages_movies_junction)
+
+    ### printowanie ratings df ###
+
+    print(ratings_df)
