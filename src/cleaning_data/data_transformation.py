@@ -96,6 +96,33 @@ class MakeDataframeFromRatings:
         return self.df
 
 
+class MakeDataframeFromKeywords:
+
+    def __init__(self):
+        archive_path = Path(__file__).resolve().parent.parent.parent / "dataset" / "archive"
+
+        self.df = pd.read_csv(archive_path / "keywords.csv", low_memory=False).drop_duplicates(ignore_index=True)
+
+    def extract_df_from_col(self):
+        self.df['keywords'] = self.df['keywords'].apply(literal_eval)
+
+        df_to_json = self.df.to_json(orient='records')
+
+        normalized_df = pd.json_normalize(
+            json.loads(df_to_json),
+            record_path='keywords',
+            meta='id',
+            meta_prefix='film_'
+        ).rename(columns={'id': 'keyword_id'}).astype({'film_id': 'Int64', 'keyword_id': 'Int64'})
+
+        transformed_df = normalized_df[['keyword_id', 'name']].drop_duplicates(ignore_index=True).sort_values(
+            'keyword_id')
+
+        junction_df = normalized_df[['film_id', 'keyword_id']].sort_values('film_id')
+
+        return transformed_df, junction_df
+
+
 if __name__ == "__main__":
     ### cleaning movies ###
     # pd.set_option('display.max_columns', 500)
@@ -139,11 +166,17 @@ if __name__ == "__main__":
 
     ### transformation ratings ###
 
-    mdfr = MakeDataframeFromRatings()
+    # mdfr = MakeDataframeFromRatings()
+    #
+    # mdfr.extract_date_and_time()
+    #
+    # ratings_df = mdfr.get_ratings_df()
 
-    mdfr.extract_date_and_time()
+    ### transformation keywords ###
 
-    ratings_df = mdfr.get_ratings_df()
+    mdfk = MakeDataframeFromKeywords()
+
+    keywords_df, keywords_movies_junction = mdfk.extract_df_from_col()
 
     ### printowanie movies dfów ###
 
@@ -160,4 +193,9 @@ if __name__ == "__main__":
 
     ### printowanie ratings df ###
 
-    print(ratings_df)
+    # print(ratings_df)
+
+    ### printowanie keywords df ###
+
+    print(keywords_df)
+    print(keywords_movies_junction)
