@@ -40,7 +40,7 @@ class CleanMoviesMetadata:
         return None
 
 
-class CleanCast():
+class CleanCast:
 
     def __init__(self):
         archive_path = Path(__file__).resolve().parent.parent.parent / "dataset" / "archive"
@@ -83,7 +83,7 @@ class CleanCast():
             self.df.loc[self.df.person_id == wrong_id, 'person_id'] = correct_id
         return None
 
-    def replace_character_nulls(self):
+    def replace_null_fields(self):
         self.df['character'] = self.df['character'].apply(lambda x: 'UNSPECIFIED' if x is None or x == '' else x)
         return None
 
@@ -95,7 +95,7 @@ class CleanCast():
         return None
 
     def get_cast_df(self):
-        # self.df = self.df.drop_duplicates(ignore_index=True)  # .set_index('film_id').sort_index()
+        self.df = self.df.drop_duplicates(ignore_index=True)  # .set_index('film_id').sort_index()
         return self.df
 
 
@@ -190,7 +190,7 @@ if __name__ == "__main__":
 
     cc.replace_wrong_ids(person_ids)
 
-    cc.replace_character_nulls()
+    cc.replace_null_fields()
 
     cc.replace_values_in_column(col_name='name', id_and_value=clean_names)
 
@@ -198,28 +198,6 @@ if __name__ == "__main__":
 
     cc.replace_values_in_column(col_name='profile_path', id_and_value=clean_profile_path)
 
+    cc.data_types_conversion()
+
     cast_df = cc.get_cast_df()
-
-    ### sprawdzanie czy dane są poprawne ###
-
-    # lista id do dropnięcia bo to duplikaty
-    # print(cast_df.loc[cast_df[['character', 'name', 'film_id']].duplicated(keep=False)].head(15))  # 1428 375
-    # print(cast_df.loc[cast_df[['character', 'name', 'film_id']].duplicated(keep=False)])
-
-    # print(cast_df.loc[cast_df.person_id == 1216756])
-    # print(cast_df.loc[cast_df.person_id == 113387])
-
-    cast_df = cast_df.drop(['film_id', 'character'], axis=1).drop_duplicates(ignore_index=True)
-    # cast_df = cast_df[~cast_df.profile_path.isnull()]
-
-
-    r = cast_df[cast_df[['person_id']].duplicated(keep=False)]
-    print(r)
-
-    # print(cast_df.dtypes)
-    # print(cast_df.loc[cast_df.index.duplicated(keep=False)])
-    # print(cast_df.loc[cast_df.character.duplicated(keep=False)])
-    # print(cast_df.loc[cast_df.gender.duplicated(keep=False)])
-    # print(cast_df.loc[cast_df.id.duplicated(keep=False)])
-    # print(cast_df.loc[cast_df.name.duplicated(keep=False)])
-    # print(cast_df.loc[cast_df.profile_path.duplicated(keep=False)])
