@@ -15,7 +15,7 @@ class CleanMoviesMetadata:
         ).drop_duplicates(ignore_index=True).rename(columns={'id': 'film_id'})
 
     def get_movies_df(self):
-        self.df = self.df.drop_duplicates(ignore_index=True)  # .set_index('film_id').sort_index()
+        self.df = self.df.drop_duplicates(ignore_index=True)  # .add_index('film_id').sort_index()
         return self.df
 
     def drop_unnecessary_columns(self, columns: list | str) -> None:
@@ -95,7 +95,7 @@ class CleanCast:
         return None
 
     def get_df(self):
-        self.df = self.df.drop_duplicates(ignore_index=True)  # .set_index('film_id').sort_index()
+        self.df = self.df.drop_duplicates(ignore_index=True)  # .add_index('film_id').sort_index()
         return self.df
 
 
