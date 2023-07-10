@@ -2,7 +2,7 @@ import pandas as pd
 from cleaning_classes import CleanMoviesMetadata, CleanCast, CleanCrew
 
 
-def clean_movies():
+def clean_movies() -> pd.DataFrame:
     # czy obiekt klasy dodać jako argument funkcji??? -> spytać Patryka
     cmm = CleanMoviesMetadata()
 
@@ -17,7 +17,7 @@ def clean_movies():
     return df
 
 
-def clean_cast():
+def clean_cast() -> pd.DataFrame:
     cc = CleanCast()
 
     cc.make_raw_dataframe(col_name='cast')
@@ -105,7 +105,7 @@ def clean_cast():
     return df
 
 
-def clean_crew():
+def clean_crew() -> pd.DataFrame:
     cc = CleanCrew()
 
     cc.make_raw_dataframe(col_name='crew')
@@ -132,18 +132,3 @@ def clean_crew():
     df = cc.get_df()
 
     return df
-
-
-if __name__ == "__main__":
-    pd.set_option('display.max_columns', 500)
-    pd.set_option('display.width', 1000)
-
-    # clean_movies_df = clean_movies()
-
-    # clean_cast_df = clean_cast()
-
-    # clean_crew_df = clean_crew()
-
-    # print(clean_movies_df)
-    # print(clean_cast_df)
-    # print(clean_crew_df)
