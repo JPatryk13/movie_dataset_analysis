@@ -1,6 +1,3 @@
-import pandas as pd
-from pathlib import Path
-from cleaning_functions import clean_movies, clean_cast, clean_crew
 from data_transformation_classes import *
 
 
@@ -124,22 +121,10 @@ def make_dict_from_credits_dfs(clean_cast_df: pd.DataFrame, clean_crew_df: pd.Da
     return dfs_dict
 
 
-def save_cleaned_datasets(x: pd.DataFrame):
+def save_cleaned_datasets(dataframes_dict: dict):
     cleaned_path = Path(__file__).resolve().parent.parent.parent / "dataset" / "cleaned"
 
-    x.to_csv(cleaned_path / "ratings_df.csv", index=False)
+    for df_name, df in dataframes_dict.items():
+        df.to_csv(cleaned_path / df_name, index=False)
 
     return None
-
-
-if __name__ == "__main__":
-    pd.set_option('display.max_columns', 500)
-    pd.set_option('display.width', 1000)
-
-    clean_movies = clean_movies()
-
-    # r = make_dict_from_credits_dfs()
-    # r = make_dict_from_movies_dfs(clean_movies)
-    r = transform_ratings()
-
-    save_cleaned_datasets(r)
