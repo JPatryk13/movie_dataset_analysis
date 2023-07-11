@@ -35,8 +35,8 @@ class CleanMoviesMetadata:
         self.df['release_date'] = pd.to_datetime(self.df['release_date']).dt.date
 
         self.df = self.df.astype(
-            {'adult': 'bool', 'budget': 'Int64', 'film_id': 'Int64', 'original_language': 'category',
-             'revenue': 'Int64', 'runtime': 'Int64', 'status': 'category', 'video': 'bool'})
+            {'adult': 'bool', 'budget': 'Int64', 'film_id': 'UInt64', 'original_language': 'category',
+             'revenue': 'Int64', 'runtime': 'UInt64', 'status': 'category', 'video': 'bool'})
         return None
 
 
@@ -67,8 +67,8 @@ class CleanCast:
     def data_types_conversion(self):
         # zmienić typy danych tam gdzie object na string
         self.df = self.df.rename(columns={'id': 'person_id'}).astype(
-            {'character': 'string', 'gender': 'category', 'person_id': 'Int64', 'name': 'string',
-             'profile_path': 'string', 'film_id': 'Int64'})
+            {'character': 'string', 'gender': 'category', 'person_id': 'UInt64', 'name': 'string',
+             'profile_path': 'string', 'film_id': 'UInt64'})
 
         return None
 
@@ -105,7 +105,7 @@ class CleanCrew:
         archive_path = Path(__file__).resolve().parent.parent.parent / "dataset" / "archive"
 
         self.df = pd.read_csv(archive_path / "credits.csv", low_memory=False).drop_duplicates(
-            ignore_index=True).rename(columns={'id': 'film_id'}).astype({'film_id': 'Int64'})[['film_id', 'crew']]
+            ignore_index=True).rename(columns={'id': 'film_id'}).astype({'film_id': 'UInt64'})[['film_id', 'crew']]
 
     def make_raw_dataframe(self, col_name: str) -> pd.DataFrame:
         self.df[col_name] = self.df[col_name].apply(literal_eval)
@@ -126,8 +126,8 @@ class CleanCrew:
     def data_types_conversion(self):
         # zmienić typy danych tam gdzie object na string
         self.df = self.df.rename(columns={'id': 'person_id'}).astype(
-            {'department': 'category', 'gender': 'category', 'person_id': 'Int64', 'job': 'string', 'name': 'string',
-             'profile_path': 'string', 'film_id': 'Int64'})
+            {'department': 'category', 'gender': 'category', 'person_id': 'UInt64', 'job': 'string', 'name': 'string',
+             'profile_path': 'string', 'film_id': 'UInt64'})
 
         return None
 

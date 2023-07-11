@@ -21,8 +21,8 @@ class MakeDataframesFromMovies:
             meta='film_id').drop_duplicates(ignore_index=True)
 
         btc_df = btc_df.rename(columns={'id': 'collection_id'}).drop_duplicates(ignore_index=True).astype(
-            {'collection_id': 'Int64', 'name': 'string', 'poster_path': 'string', 'backdrop_path': 'string',
-             'film_id': 'Int64'}).sort_values('collection_id')
+            {'collection_id': 'UInt64', 'name': 'string', 'poster_path': 'string', 'backdrop_path': 'string',
+             'film_id': 'UInt64'}).sort_values('collection_id')
 
         self.df = self.df.merge(btc_df, how='left', on='film_id').drop(
             ['belongs_to_collection', 'name', 'poster_path_y', 'backdrop_path'], axis=1)
@@ -49,13 +49,13 @@ class MakeDataframesFromMovies:
 
         if category_index:
             normalized_df = normalized_df.rename(columns={category_index: new_index_name}).astype(
-                {new_index_name: 'category', 'film_id': 'Int64'})
+                {new_index_name: 'category', 'film_id': 'UInt64'})
 
         else:
             new_index_name = f'{new_index_name}_id'
 
             normalized_df = normalized_df.rename(columns={'id': new_index_name}).astype(
-                {new_index_name: 'Int64', 'film_id': 'Int64'})
+                {new_index_name: 'UInt64', 'film_id': 'UInt64'})
 
         junction_df = normalized_df[['film_id', new_index_name]].sort_values('film_id')
 
@@ -115,7 +115,7 @@ class MakeDataframeFromKeywords:
             record_path='keywords',
             meta='id',
             meta_prefix='film_'
-        ).rename(columns={'id': 'keyword_id'}).astype({'film_id': 'Int64', 'keyword_id': 'Int64'})
+        ).rename(columns={'id': 'keyword_id'}).astype({'film_id': 'UInt64', 'keyword_id': 'UInt64'})
 
         transformed_df = normalized_df[['keyword_id', 'name']].drop_duplicates(ignore_index=True).sort_values(
             'keyword_id')
