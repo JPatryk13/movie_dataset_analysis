@@ -21,7 +21,6 @@ def make_dict_from_movies_dfs(clean_movies_df: pd.DataFrame) -> dict:
         col_name='production_companies',
         new_index_name='company')
 
-    production_companies_df = production_companies_df[['company_id', 'name']]
     dfs_dict['production_companies_df'] = production_companies_df
     dfs_dict['companies_movies_junction'] = companies_movies_junction
 
@@ -47,14 +46,16 @@ def make_dict_from_movies_dfs(clean_movies_df: pd.DataFrame) -> dict:
     return dfs_dict
 
 
-def transform_ratings() -> pd.DataFrame:
+def transform_ratings(movies_df: pd.DataFrame) -> pd.DataFrame:
     mdfr = MakeDataframeFromRatings()
 
     mdfr.extract_date_and_time()
 
     df = mdfr.get_ratings_df()
 
-    return df
+    transformed_df = df.merge(movies_df, left_on='movie_id', right_on='film_id').drop('film_id', axis=1)
+
+    return transformed_df.set_index(['user_id', 'movie_id']).sort_index()
 
 
 def make_dict_from_keywords_dfs() -> dict:
@@ -77,7 +78,7 @@ def make_dict_from_credits_dfs(clean_cast_df: pd.DataFrame, clean_crew_df: pd.Da
 
     mdfcast.create_index_for_cast_data()
 
-    cast_df = mdfcast.create_df(columns=['cast_id', 'character', 'person_id'])
+    cast_df = mdfcast.create_df(columns=['cast_id', 'character', 'person_id'], index_name='cast_id')
     dfs_dict['cast_df'] = cast_df
 
     cast_movies_junction = mdfcast.create_cast_movies_junction()
@@ -88,17 +89,15 @@ def make_dict_from_credits_dfs(clean_cast_df: pd.DataFrame, clean_crew_df: pd.Da
 
     mdfcrew.create_index_for_crew_data()
 
-    crew_df = mdfcrew.create_df(columns=['crew_id', 'person_id'])
+    crew_df = mdfcrew.create_df(columns=['crew_id', 'person_id'], index_name='crew_id')
     dfs_dict['crew_df'] = crew_df
 
     crew_movies_junction = mdfcrew.create_crew_movies_junction()
     dfs_dict['crew_movies_junction'] = crew_movies_junction
 
-    departments_df = mdfcrew.create_df(columns=['department'], add_index='department_id')
-    dfs_dict['departments_df'] = departments_df
+    departments_df = mdfcrew.create_df(columns=['department'], index_name='department_id')
 
-    jobs_df = mdfcrew.create_df(columns=['job'], add_index='job_id')
-    dfs_dict['jobs_df'] = jobs_df
+    jobs_df = mdfcrew.create_df(columns=['job'], index_name='job_id')
 
     departments_jobs_junction = mdfcrew.create_departments_jobs_junction(dept=departments_df, job=jobs_df)
     dfs_dict['departments_jobs_junction'] = departments_jobs_junction
@@ -106,15 +105,20 @@ def make_dict_from_credits_dfs(clean_cast_df: pd.DataFrame, clean_crew_df: pd.Da
     crew_departments_junction = mdfcrew.create_crew_departments_junction(dept=departments_df)
     dfs_dict['crew_departments_junction'] = crew_departments_junction
 
+    departments_df = departments_df.set_index('department_id')
+    dfs_dict['departments_df'] = departments_df
+
+    jobs_df = jobs_df.set_index('job_id')
+    dfs_dict['jobs_df'] = jobs_df
+
     # transformation with concatenation both people dfs
 
-    people_cast = mdfcast.create_df(columns=['person_id', 'gender', 'name', 'profile_path'],
-                                    sort_by_index='person_id')
+    people_cast = mdfcast.create_df(columns=['person_id', 'gender', 'name', 'profile_path'])
 
-    people_crew = mdfcrew.create_df(columns=['person_id', 'gender', 'name', 'profile_path'], sort_by_index='person_id')
+    people_crew = mdfcrew.create_df(columns=['person_id', 'gender', 'name', 'profile_path'])
 
     people_df = pd.concat([people_cast, people_crew]).drop_duplicates(
-        ignore_index=True).sort_values('person_id')
+        ignore_index=True).set_index('person_id').sort_index()
 
     dfs_dict['people_df'] = people_df
 
@@ -125,6 +129,10 @@ def save_cleaned_datasets(dataframes_dict: dict):
     cleaned_path = Path(__file__).resolve().parent.parent.parent / "dataset" / "cleaned"
 
     for df_name, df in dataframes_dict.items():
-        df.to_csv(cleaned_path / df_name, index=False)
+        if 'junction' in df_name:
+            with_index = False
+        else:
+            with_index = True
+        df.to_csv(cleaned_path / df_name, index=with_index)
 
     return None
