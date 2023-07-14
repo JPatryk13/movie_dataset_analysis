@@ -13,7 +13,7 @@ def make_dict_from_movies_dfs(clean_movies_df: pd.DataFrame) -> dict:
     mdfm = MakeDataframesFromMovies(clean_movies_df)
     dfs_dict['collections_df'] = mdfm.create_collections_df()
 
-    genres_df, genres_movies_junction = mdfm.extract_df_from_col(col_name='genres')
+    genres_df, genres_movies_junction = mdfm.extract_df_from_col(col_name='genres', new_index_name='genre')
     dfs_dict['genres_df'] = genres_df
     dfs_dict['genres_movies_junction'] = genres_movies_junction
 
