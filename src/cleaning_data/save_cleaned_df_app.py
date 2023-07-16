@@ -17,15 +17,11 @@ if __name__ == "__main__":
     credits_dict = make_dict_from_credits_dfs(clean_cast_df=clean_cast, clean_crew_df=clean_crew)
 
     # add all dataframes to empty all_dfs dict as key: dataframe_name, value: dataframe object
-    all_dfs_dict['ratings_df'] = transform_ratings(movies_dict['movies_df']['film_id'])
-
-    movies_dict['movies_df'] = movies_dict['movies_df'].set_index('film_id').sort_index()
+    all_dfs_dict['ratings'] = transform_ratings(movies_dict['movies']['film_id'])
 
     all_dfs_dict.update(movies_dict)
     all_dfs_dict.update(keywords_dict)
     all_dfs_dict.update(credits_dict)
 
-    # list of all dataframes names to save
-    # dataframes_list = list(all_dfs_dict.keys())
-
+    # save all cleaned dataframes
     save_cleaned_datasets(all_dfs_dict)

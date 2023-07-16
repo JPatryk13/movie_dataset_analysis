@@ -11,37 +11,37 @@ def make_dict_from_movies_dfs(clean_movies_df: pd.DataFrame) -> dict:
     dfs_dict = {}
 
     mdfm = MakeDataframesFromMovies(clean_movies_df)
-    dfs_dict['collections_df'] = mdfm.create_collections_df()
+    dfs_dict['collections'] = mdfm.create_collections_df()
 
     genres_df, genres_movies_junction = mdfm.extract_df_from_col(col_name='genres', new_index_name='genre')
-    dfs_dict['genres_df'] = genres_df
-    dfs_dict['genres_movies_junction'] = genres_movies_junction
+    dfs_dict['genres'] = genres_df
+    dfs_dict['genres_movies'] = genres_movies_junction
 
     production_companies_df, companies_movies_junction = mdfm.extract_df_from_col(
         col_name='production_companies',
         new_index_name='company')
 
-    dfs_dict['production_companies_df'] = production_companies_df
-    dfs_dict['companies_movies_junction'] = companies_movies_junction
+    dfs_dict['companies'] = production_companies_df
+    dfs_dict['companies_movies'] = companies_movies_junction
 
     production_countries_df, countries_movies_junction = mdfm.extract_df_from_col(
         col_name='production_countries',
         new_index_name='country_code',
         category_index='iso_3166_1')
-    dfs_dict['production_countries_df'] = production_countries_df
-    dfs_dict['countries_movies_junction'] = countries_movies_junction
+    dfs_dict['countries'] = production_countries_df
+    dfs_dict['countries_movies'] = countries_movies_junction
 
     spoken_languages_df, languages_movies_junction = mdfm.extract_df_from_col(
         col_name='spoken_languages',
         new_index_name='language_code',
         category_index='iso_639_1')
-    dfs_dict['spoken_languages_df'] = spoken_languages_df
-    dfs_dict['languages_movies_junction'] = languages_movies_junction
+    dfs_dict['languages'] = spoken_languages_df
+    dfs_dict['languages_movies'] = languages_movies_junction
 
     mdfm.final_transformation_movies_df()
 
     movies_df = mdfm.get_movies_df()
-    dfs_dict['movies_df'] = movies_df
+    dfs_dict['movies'] = movies_df
 
     return dfs_dict
 
@@ -64,8 +64,8 @@ def make_dict_from_keywords_dfs() -> dict:
     mdfk = MakeDataframeFromKeywords()
 
     keywords_df, keywords_movies_junction = mdfk.extract_df_from_col()
-    dfs_dict['keywords_df'] = keywords_df
-    dfs_dict['keywords_movies_junction'] = keywords_movies_junction
+    dfs_dict['keywords'] = keywords_df
+    dfs_dict['keywords_movies'] = keywords_movies_junction
 
     return dfs_dict
 
@@ -79,10 +79,10 @@ def make_dict_from_credits_dfs(clean_cast_df: pd.DataFrame, clean_crew_df: pd.Da
     mdfcast.create_index_for_cast_data()
 
     cast_df = mdfcast.create_df(columns=['character_id', 'character', 'person_id'], index_name='character_id')
-    dfs_dict['cast_df'] = cast_df
+    dfs_dict['characters'] = cast_df
 
     cast_movies_junction = mdfcast.create_cast_movies_junction()
-    dfs_dict['cast_movies_junction'] = cast_movies_junction
+    dfs_dict['characters_movies'] = cast_movies_junction
 
     # transformation crew
     mdfcrew = MakeDataframesFromCrew(clean_crew_df)
@@ -90,26 +90,26 @@ def make_dict_from_credits_dfs(clean_cast_df: pd.DataFrame, clean_crew_df: pd.Da
     mdfcrew.create_index_for_crew_data()
 
     crew_df = mdfcrew.create_df(columns=['crew_id', 'person_id'], index_name='crew_id')
-    dfs_dict['crew_df'] = crew_df
+    dfs_dict['crew'] = crew_df
 
     crew_movies_junction = mdfcrew.create_crew_movies_junction()
-    dfs_dict['crew_movies_junction'] = crew_movies_junction
+    dfs_dict['crew_movies'] = crew_movies_junction
 
     departments_df = mdfcrew.create_df(columns=['department'], index_name='department_id')
 
     jobs_df = mdfcrew.create_df(columns=['job'], index_name='job_id')
 
     departments_jobs_junction = mdfcrew.create_departments_jobs_junction(dept=departments_df, job=jobs_df)
-    dfs_dict['departments_jobs_junction'] = departments_jobs_junction
+    dfs_dict['departments_jobs'] = departments_jobs_junction
 
     crew_departments_junction = mdfcrew.create_crew_departments_junction(dept=departments_df)
-    dfs_dict['crew_departments_junction'] = crew_departments_junction
+    dfs_dict['crew_departments'] = crew_departments_junction
 
     departments_df = departments_df.set_index('department_id')
-    dfs_dict['departments_df'] = departments_df
+    dfs_dict['departments'] = departments_df
 
     jobs_df = jobs_df.set_index('job_id')
-    dfs_dict['jobs_df'] = jobs_df
+    dfs_dict['jobs'] = jobs_df
 
     # transformation with concatenation both people dfs
 
@@ -122,19 +122,18 @@ def make_dict_from_credits_dfs(clean_cast_df: pd.DataFrame, clean_crew_df: pd.Da
     people_df = pd.concat([people_cast, people_crew]).drop_duplicates(
         ignore_index=True).set_index('person_id').sort_index()
 
-    dfs_dict['people_df'] = people_df
+    dfs_dict['people'] = people_df
 
     return dfs_dict
 
 
 def save_cleaned_datasets(dataframes_dict: dict):
-    cleaned_path = Path(__file__).resolve().parent.parent.parent / "dataset" / "cleaned"
+    dataset_path = Path(__file__).resolve().parent.parent.parent / "dataset"
+
+    cleaned_path = Path(dataset_path, 'cleaned')
+    cleaned_path.mkdir(parents=True, exist_ok=True)
 
     for df_name, df in dataframes_dict.items():
-        if 'junction' in df_name:
-            with_index = False
-        else:
-            with_index = True
-        df.to_csv(cleaned_path / df_name, index=with_index)
+        df.to_csv(cleaned_path / df_name)
 
     return None

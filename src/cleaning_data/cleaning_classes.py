@@ -84,7 +84,7 @@ class CleanCast:
         return None
 
     def replace_null_fields(self):
-        self.df['character'] = self.df['character'].apply(lambda x: 'UNSPECIFIED' if x is None or x == '' else x)
+        self.df['character'] = self.df['character'].apply(lambda x: 'UNSPECIFIED' if x is None or x.strip() == '' else x)
         return None
 
     def replace_values_in_column(self, col_name: str, id_and_value: list) -> None:
