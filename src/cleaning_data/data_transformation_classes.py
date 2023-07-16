@@ -133,9 +133,9 @@ class MakeDataframesFromCast:
     def create_index_for_cast_data(self) -> pd.DataFrame:
         self.sub_df = self.df.drop('film_id', axis=1).drop_duplicates(ignore_index=True)
         self.sub_df.index += 1
-        self.sub_df.reset_index(names='cast_id', inplace=True)
+        self.sub_df.reset_index(names='character_id', inplace=True)
 
-        return self.sub_df.set_index('cast_id')
+        return self.sub_df.set_index('character_id')
 
     def create_df(self, columns: list, index_name: str = None) -> pd.DataFrame:
         transformed_df = self.sub_df[columns].drop_duplicates(ignore_index=True)
@@ -153,7 +153,7 @@ class MakeDataframesFromCast:
             right_on=['character', 'gender', 'person_id', 'name', 'profile_path']
         ).drop(['character', 'gender', 'person_id', 'name', 'profile_path'], axis=1).sort_values('film_id')
 
-        junction_df = junction_df[['film_id', 'cast_id']]
+        junction_df = junction_df[['film_id', 'character_id']]
 
         return junction_df
 

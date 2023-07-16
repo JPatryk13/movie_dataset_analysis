@@ -78,7 +78,7 @@ def make_dict_from_credits_dfs(clean_cast_df: pd.DataFrame, clean_crew_df: pd.Da
 
     mdfcast.create_index_for_cast_data()
 
-    cast_df = mdfcast.create_df(columns=['cast_id', 'character', 'person_id'], index_name='cast_id')
+    cast_df = mdfcast.create_df(columns=['character_id', 'character', 'person_id'], index_name='character_id')
     dfs_dict['cast_df'] = cast_df
 
     cast_movies_junction = mdfcast.create_cast_movies_junction()
@@ -113,9 +113,11 @@ def make_dict_from_credits_dfs(clean_cast_df: pd.DataFrame, clean_crew_df: pd.Da
 
     # transformation with concatenation both people dfs
 
-    people_cast = mdfcast.create_df(columns=['person_id', 'gender', 'name', 'profile_path'])
+    people_cast = mdfcast.create_df(columns=['person_id', 'gender', 'name', 'profile_path'],
+                                    index_name='person_id').reset_index()
 
-    people_crew = mdfcrew.create_df(columns=['person_id', 'gender', 'name', 'profile_path'])
+    people_crew = mdfcrew.create_df(columns=['person_id', 'gender', 'name', 'profile_path'],
+                                    index_name='person_id').reset_index()
 
     people_df = pd.concat([people_cast, people_crew]).drop_duplicates(
         ignore_index=True).set_index('person_id').sort_index()
