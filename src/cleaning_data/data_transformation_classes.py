@@ -29,7 +29,7 @@ class MakeDataframesFromMovies:
 
         btc_df = btc_df.drop('film_id', axis=1).drop_duplicates(ignore_index=True)
 
-        return btc_df.set_index('collection_id').sort_index()
+        return btc_df
 
     def extract_df_from_col(self, col_name: str, new_index_name: str = None, category_index: str = None) \
             -> tuple[pd.DataFrame, pd.DataFrame | None]:
@@ -59,8 +59,8 @@ class MakeDataframesFromMovies:
 
         junction_df = normalized_df[['film_id', new_index_name]].sort_values('film_id')
 
-        transformed_df = normalized_df.drop('film_id', axis=1).drop_duplicates(ignore_index=True).set_index(
-            new_index_name).sort_index()
+        transformed_df = normalized_df.drop('film_id', axis=1).drop_duplicates(ignore_index=True).sort_values(
+            new_index_name)
 
         return transformed_df, junction_df
 
@@ -116,8 +116,8 @@ class MakeDataframeFromKeywords:
             meta_prefix='film_'
         ).rename(columns={'id': 'keyword_id'}).astype({'film_id': 'UInt64', 'keyword_id': 'UInt64'})
 
-        transformed_df = normalized_df[['keyword_id', 'name']].drop_duplicates(ignore_index=True).set_index(
-            'keyword_id').sort_index()
+        transformed_df = normalized_df[['keyword_id', 'name']].drop_duplicates(ignore_index=True).sort_values(
+            'keyword_id')
 
         junction_df = normalized_df[['film_id', 'keyword_id']].sort_values('film_id')
 
@@ -141,7 +141,7 @@ class MakeDataframesFromCast:
         transformed_df = self.sub_df[columns].drop_duplicates(ignore_index=True)
 
         if index_name:
-            transformed_df = transformed_df.set_index(index_name).sort_index()
+            transformed_df = transformed_df.sort_values(index_name)
 
         return transformed_df
 
@@ -178,7 +178,7 @@ class MakeDataframesFromCrew:
         transformed_df = self.sub_df[columns].drop_duplicates(ignore_index=True)
 
         if index_name in columns:
-            transformed_df = transformed_df.set_index(index_name).sort_index()
+            transformed_df = transformed_df.sort_values(index_name)
         else:
             transformed_df.index += 1
             transformed_df.reset_index(names=index_name, inplace=True)

@@ -21,6 +21,7 @@ def make_dict_from_movies_dfs(clean_movies_df: pd.DataFrame) -> dict:
         col_name='production_companies',
         new_index_name='company')
 
+    production_companies_df = production_companies_df[['company_id', 'name']]
     dfs_dict['companies'] = production_companies_df
     dfs_dict['companies_movies'] = companies_movies_junction
 
@@ -41,6 +42,7 @@ def make_dict_from_movies_dfs(clean_movies_df: pd.DataFrame) -> dict:
     mdfm.final_transformation_movies_df()
 
     movies_df = mdfm.get_movies_df()
+    movies_df.insert(0, 'film_id', movies_df.pop('film_id'))
     dfs_dict['movies'] = movies_df
 
     return dfs_dict
@@ -55,7 +57,7 @@ def transform_ratings(movies_df: pd.DataFrame) -> pd.DataFrame:
 
     transformed_df = df.merge(movies_df, left_on='movie_id', right_on='film_id').drop('film_id', axis=1)
 
-    return transformed_df.set_index(['user_id', 'movie_id']).sort_index()
+    return transformed_df.sort_values(['user_id', 'movie_id'])
 
 
 def make_dict_from_keywords_dfs() -> dict:
@@ -78,7 +80,7 @@ def make_dict_from_credits_dfs(clean_cast_df: pd.DataFrame, clean_crew_df: pd.Da
 
     mdfcast.create_index_for_cast_data()
 
-    cast_df = mdfcast.create_df(columns=['character_id', 'character', 'person_id'], index_name='character_id')
+    cast_df = mdfcast.create_df(columns=['character_id', 'character', 'person_id'])
     dfs_dict['characters'] = cast_df
 
     cast_movies_junction = mdfcast.create_cast_movies_junction()
@@ -105,22 +107,16 @@ def make_dict_from_credits_dfs(clean_cast_df: pd.DataFrame, clean_crew_df: pd.Da
     crew_departments_junction = mdfcrew.create_crew_departments_junction(dept=departments_df)
     dfs_dict['crew_departments'] = crew_departments_junction
 
-    departments_df = departments_df.set_index('department_id')
     dfs_dict['departments'] = departments_df
-
-    jobs_df = jobs_df.set_index('job_id')
     dfs_dict['jobs'] = jobs_df
 
     # transformation with concatenation both people dfs
 
-    people_cast = mdfcast.create_df(columns=['person_id', 'gender', 'name', 'profile_path'],
-                                    index_name='person_id').reset_index()
+    people_cast = mdfcast.create_df(columns=['person_id', 'gender', 'name', 'profile_path'], index_name='person_id')
 
-    people_crew = mdfcrew.create_df(columns=['person_id', 'gender', 'name', 'profile_path'],
-                                    index_name='person_id').reset_index()
+    people_crew = mdfcrew.create_df(columns=['person_id', 'gender', 'name', 'profile_path'], index_name='person_id')
 
-    people_df = pd.concat([people_cast, people_crew]).drop_duplicates(
-        ignore_index=True).set_index('person_id').sort_index()
+    people_df = pd.concat([people_cast, people_crew]).drop_duplicates(ignore_index=True)
 
     dfs_dict['people'] = people_df
 
@@ -134,6 +130,6 @@ def save_cleaned_datasets(dataframes_dict: dict):
     cleaned_path.mkdir(parents=True, exist_ok=True)
 
     for df_name, df in dataframes_dict.items():
-        df.to_csv(cleaned_path / df_name)
+        df.to_csv(cleaned_path / df_name, index=False)
 
     return None
