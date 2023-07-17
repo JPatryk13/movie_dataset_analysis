@@ -23,8 +23,7 @@ def open_all_datasets(dfs_list: list) -> dict:
     for df_name in dfs_list:
         df = pd.read_csv(archive_path / df_name, low_memory=False, dtype=all_dtypes, keep_default_na=False,
                          na_values='')
-        if 'Unnamed: 0' in df.columns:
-            df.drop('Unnamed: 0', axis=1, inplace=True)
+
         all_dfs[df_name] = df
     return all_dfs
 
