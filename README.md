@@ -18,7 +18,7 @@ git clone link_do_twojego_repozytorium.git
 
 Navigate to the project directory:
 ``` 
-cd your_project_name
+cd movie_dataset_analysis
 ```
 
 Create and activate a virtual environment:
