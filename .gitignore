@@ -128,4 +128,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-/dataset
+/dataset/archive
+/dataset/cleaned
