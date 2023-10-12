@@ -56,7 +56,7 @@ class CleanCast:
         self.df = pd.json_normalize(
             json.loads(df_to_json),
             record_path=col_name,
-            meta='film_id').drop_duplicates(ignore_index=True)
+            meta='film_id').drop_duplicates(ignore_index=True).rename(columns={'id': 'person_id'})
 
         return self.df
 
@@ -66,7 +66,7 @@ class CleanCast:
 
     def data_types_conversion(self):
         # zmienić typy danych tam gdzie object na string
-        self.df = self.df.rename(columns={'id': 'person_id'}).astype(
+        self.df = self.df.astype(
             {'character': 'string', 'gender': 'category', 'person_id': 'UInt64', 'name': 'string',
              'profile_path': 'string', 'film_id': 'UInt64'})
 
@@ -115,7 +115,7 @@ class CleanCrew:
         self.df = pd.json_normalize(
             json.loads(df_to_json),
             record_path=col_name,
-            meta='film_id').drop_duplicates(ignore_index=True)
+            meta='film_id').drop_duplicates(ignore_index=True).rename(columns={'id': 'person_id'})
 
         return self.df
 
@@ -125,7 +125,7 @@ class CleanCrew:
 
     def data_types_conversion(self):
         # zmienić typy danych tam gdzie object na string
-        self.df = self.df.rename(columns={'id': 'person_id'}).astype(
+        self.df = self.df.astype(
             {'department': 'category', 'gender': 'category', 'person_id': 'UInt64', 'job': 'string', 'name': 'string',
              'profile_path': 'string', 'film_id': 'UInt64'})
 

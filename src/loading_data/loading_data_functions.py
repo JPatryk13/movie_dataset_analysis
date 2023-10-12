@@ -2,20 +2,12 @@ import psycopg2
 import logging
 import pandas as pd
 from pathlib import Path
-from sqlalchemy import create_engine
-from datatypes_to_open import *
+from src.loading_data.datatypes_to_open import *
 
 pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1000)
 
 archive_path = Path(__file__).resolve().parent.parent.parent / "dataset" / "cleaned"
-
-
-def open_one_dataset(df_name: str, index_name: str | list = None) -> pd.DataFrame:
-    df = pd.read_csv(archive_path / df_name, low_memory=False, dtype=all_dtypes, index_col=index_name,
-                     keep_default_na=False, na_values='')
-
-    return df
 
 
 def open_all_datasets(dfs_list: list) -> dict:
@@ -26,22 +18,6 @@ def open_all_datasets(dfs_list: list) -> dict:
 
         all_dfs[df_name] = df
     return all_dfs
-
-
-def load_one_df_to_database(df: pd.DataFrame, schema_name: str, table_name: str) -> bool:
-    try:
-        # Connect to the PostgreSQL database
-        engine = create_engine('postgresql://postgres:admin@localhost:5432/films_analyse_dissertation')
-
-        # Insert the DataFrame into the PostgreSQL table
-        df.to_sql(table_name, engine, schema=schema_name, if_exists='append', chunksize=100000, index=False)
-
-        # Close the database connection
-        engine.dispose()
-        return True
-    except Exception as e:
-        print(f"An error occurred while loading the DataFrame: {str(e)}")
-        return False
 
 
 def load_data_to_postgres(file_path, table_name, conn):
