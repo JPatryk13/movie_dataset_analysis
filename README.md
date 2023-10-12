@@ -11,10 +11,7 @@ Before starting your project, make sure you have the following tools installed:
 - Additionally, it is recommended to use a Python virtual environment such as venv.
 
 ## Installation
-Clone the repository to the selected directory: 
-``` 
-git clone link_do_twojego_repozytorium.git
-```
+Clone the repository to the selected directory or open zip file
 
 Navigate to the project directory:
 ``` 
