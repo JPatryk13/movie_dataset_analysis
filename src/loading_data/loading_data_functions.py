@@ -2,6 +2,7 @@ import psycopg2
 import logging
 import pandas as pd
 from pathlib import Path
+from src.config import *
 from src.loading_data.datatypes_to_open import *
 
 pd.set_option('display.max_columns', 500)
@@ -41,11 +42,11 @@ def load_all_csv_to_database(schema_name: str) -> bool:
     try:
         # Connect to the local PostgreSQL database
         conn = psycopg2.connect(
-            dbname="films_analyse_dissertation",
-            user="postgres",
-            password="admin",
-            host="localhost",
-            port="5432"
+            dbname=dbname,
+            user=user,
+            password=password,
+            host=host,
+            port=port
         )
 
         # Create a Path object for the CSV directory

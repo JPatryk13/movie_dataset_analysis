@@ -1,0 +1,5 @@
+dbname = "films_analyse_dissertation"
+user = "postgres"
+password = "admin"
+host = "localhost"
+port = "5432"
