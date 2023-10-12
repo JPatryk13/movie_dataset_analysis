@@ -30,3 +30,23 @@ Install the required packages from the requirements.txt file:
 pip install -r requirements.txt
 ```
 
+## Download datasets
+From movies dataset on webpage: https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset/
+
+Download to "dataset" directory files:
+- credits.csv
+- keywords.csv
+- movies_metadata.csv
+- ratings.csv
+
+
+## Execution
+1. Configure your database connection by editing the config.py
+2. Execute the ETL Cleaning and Transforming processes
+```
+python save_cleaned_df_app.py
+```
+3. Execute Loading to DB processes
+```
+python loading_app.py
+```
