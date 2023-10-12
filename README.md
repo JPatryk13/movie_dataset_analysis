@@ -41,7 +41,7 @@ Download to "dataset" directory files:
 
 
 ## Execution
-1. Configure your database connection by editing the config.py
+1. Configure your database connection by editing the ```config.py``` file
 2. Execute the ETL Cleaning and Transforming processes
 ```
 python save_cleaned_df_app.py
@@ -50,3 +50,13 @@ python save_cleaned_df_app.py
 ```
 python loading_app.py
 ```
+4. After the ETL operations, you can export the data to a Tableau-friendly format or use the provided scripts/tools within the project for visualization in Tableau.
+
+
+## Support
+If you encounter any issues or have questions regarding the project's operation, please use the "Issues" section on GitHub or contact directly via email.
+
+## License
+This project is available under the MIT license. More details can be found in the LICENSE file.
+
+
