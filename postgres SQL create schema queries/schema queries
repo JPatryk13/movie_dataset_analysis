@@ -1,0 +1,146 @@
+DROP SCHEMA IF EXISTS films CASCADE;
+
+CREATE SCHEMA films
+	CREATE TABLE collections(
+        collection_id INT NOT NULL PRIMARY KEY,
+        name VARCHAR(255) UNIQUE NOT NULL,
+		poster_path VARCHAR(50),
+		backdrop_path VARCHAR(50)
+    )
+	CREATE TABLE movies(
+        film_id INT NOT NULL PRIMARY KEY,
+        adult BOOLEAN NOT NULL,
+		budget BIGINT NOT NULL,
+		homepage VARCHAR(255),
+		imdb_id VARCHAR(10) UNIQUE,
+		original_language VARCHAR(2),
+		original_title VARCHAR(255) NOT NULL,
+		overview TEXT,
+		poster_path varchar(50),
+		release_date DATE,
+		revenue BIGINT,
+		runtime INT,
+		status VARCHAR(20) CHECK (status IN ('Canceled', 'In Production', 'Planned', 'Post Production', 'Released', 'Rumored', NULL)),
+		tagline TEXT,
+		title VARCHAR(255),
+		video BOOLEAN NOT NULL,
+		collection_id INT,
+		CONSTRAINT fk_collections FOREIGN KEY(collection_id) REFERENCES collections(collection_id)
+    )
+	CREATE TABLE ratings(
+        user_id INT NOT NULL,
+		movie_id INT NOT NULL,
+        rating  REAL CHECK (rating >= 0 AND rating <= 5),
+		date DATE,
+		time TIME,
+		PRIMARY KEY(user_id, movie_id),
+		CONSTRAINT fk_movies FOREIGN KEY(movie_id) REFERENCES movies(film_id)
+    )
+	CREATE TABLE genres(
+        genre_id INT PRIMARY KEY,
+        name VARCHAR(50) UNIQUE NOT NULL
+    )
+	CREATE TABLE genres_movies(
+        film_id INT NOT NULL,
+        genre_id INT NOT NULL,
+		PRIMARY KEY(film_id, genre_id),
+		CONSTRAINT fk_movies FOREIGN KEY(film_id) REFERENCES movies(film_id),
+		CONSTRAINT fk_genres FOREIGN KEY(genre_id) REFERENCES genres(genre_id)
+    )
+	CREATE TABLE keywords(
+        keyword_id INT PRIMARY KEY,
+        name VARCHAR(50) UNIQUE NOT NULL
+    )
+	CREATE TABLE keywords_movies(
+        film_id INT NOT NULL,
+        keyword_id INT NOT NULL,
+		PRIMARY KEY(film_id, keyword_id),
+		CONSTRAINT fk_movies FOREIGN KEY(film_id) REFERENCES movies(film_id),
+		CONSTRAINT fk_keywords FOREIGN KEY(keyword_id) REFERENCES keywords(keyword_id)
+    )
+	CREATE TABLE companies(
+        company_id INT PRIMARY KEY,
+        name VARCHAR(150) NOT NULL
+    )
+	CREATE TABLE companies_movies(
+        film_id INT NOT NULL,
+        company_id INT NOT NULL,
+		PRIMARY KEY(film_id, company_id),
+		CONSTRAINT fk_movies FOREIGN KEY(film_id) REFERENCES movies(film_id),
+		CONSTRAINT fk_companies FOREIGN KEY(company_id) REFERENCES companies(company_id)
+    )
+	CREATE TABLE countries(
+        country_code VARCHAR(2) PRIMARY KEY,
+        name VARCHAR(50) NOT NULL
+    )
+	CREATE TABLE countries_movies(
+        film_id INT NOT NULL,
+        country_code VARCHAR(2) NOT NULL,
+		PRIMARY KEY(film_id, country_code),
+		CONSTRAINT fk_movies FOREIGN KEY(film_id) REFERENCES movies(film_id),
+		CONSTRAINT fk_countries FOREIGN KEY(country_code) REFERENCES countries(country_code)
+    )
+	CREATE TABLE languages(
+        language_code VARCHAR(2) PRIMARY KEY,
+        name VARCHAR(20)
+    )
+	CREATE TABLE languages_movies(
+        film_id INT NOT NULL,
+        language_code VARCHAR(2) NOT NULL,
+		PRIMARY KEY(film_id, language_code),
+		CONSTRAINT fk_movies FOREIGN KEY(film_id) REFERENCES movies(film_id),
+		CONSTRAINT fk_languages FOREIGN KEY(language_code) REFERENCES languages(language_code)
+    )
+	CREATE TABLE jobs(
+        job_id SERIAL PRIMARY KEY,
+        job VARCHAR(60) UNIQUE NOT NULL
+    )
+	CREATE TABLE departments(
+        department_id INT PRIMARY KEY,
+        department VARCHAR(50) UNIQUE NOT NULL
+    )
+	CREATE TABLE departments_jobs(
+        department_id INT NOT NULL,
+		job_id INT NOT NULL,
+		PRIMARY KEY(job_id, department_id),
+		CONSTRAINT fk_jobs FOREIGN KEY(job_id) REFERENCES jobs(job_id),
+		CONSTRAINT fk_departments FOREIGN KEY(department_id) REFERENCES departments(department_id)
+    )
+	CREATE TABLE people(
+        person_id INT PRIMARY KEY,
+        gender SMALLINT	CHECK (gender >= 0 AND gender <= 2) NOT NULL,
+		name VARCHAR(50) NOT NULL,
+		profile_path VARCHAR(50)
+    )
+	CREATE TABLE crew(
+        crew_id INT NOT NULL PRIMARY KEY,
+        person_id INT NOT NULL,
+		CONSTRAINT fk_people FOREIGN KEY(person_id) REFERENCES people(person_id)
+    )
+	CREATE TABLE crew_departments(
+		crew_id INT NOT NULL,
+		department_id INT NOT NULL,
+		PRIMARY KEY(crew_id, department_id),
+		CONSTRAINT fk_crew FOREIGN KEY(crew_id) REFERENCES crew(crew_id),
+		CONSTRAINT fk_departments FOREIGN KEY(department_id) REFERENCES departments(department_id)
+    )
+	CREATE TABLE crew_movies(
+        film_id INT NOT NULL,
+		crew_id INT NOT NULL,
+		PRIMARY KEY(film_id, crew_id),
+		CONSTRAINT fk_movies FOREIGN KEY(film_id) REFERENCES movies(film_id),
+		CONSTRAINT fk_crew FOREIGN KEY(crew_id) REFERENCES crew(crew_id)
+    )
+	CREATE TABLE characters(
+        character_id INT NOT NULL PRIMARY KEY,
+		character TEXT NOT NULL,
+        person_id INT NOT NULL,
+		CONSTRAINT fk_people FOREIGN KEY(person_id) REFERENCES people(person_id)
+    )
+	CREATE TABLE characters_movies(
+        film_id INT NOT NULL,
+		character_id INT NOT NULL,
+		PRIMARY KEY(film_id, character_id),
+		CONSTRAINT fk_movies FOREIGN KEY(film_id) REFERENCES movies(film_id),
+		CONSTRAINT fk_characters FOREIGN KEY(character_id) REFERENCES characters(character_id)
+    )
