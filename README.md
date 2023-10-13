@@ -11,14 +11,11 @@ Before starting your project, make sure you have the following tools installed:
 - Additionally, it is recommended to use a Python virtual environment such as venv.
 
 ## Installation
-Clone the repository to the selected directory: 
-``` 
-git clone link_do_twojego_repozytorium.git
-```
+Clone the repository to the selected directory or open zip file
 
 Navigate to the project directory:
 ``` 
-cd your_project_name
+cd movie_dataset_analysis
 ```
 
 Create and activate a virtual environment:
@@ -32,4 +29,34 @@ Install the required packages from the requirements.txt file:
 ``` 
 pip install -r requirements.txt
 ```
+
+## Download datasets
+From movies dataset on webpage: https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset/
+
+Download to "dataset" directory files:
+- credits.csv
+- keywords.csv
+- movies_metadata.csv
+- ratings.csv
+
+
+## Execution
+1. Configure your database connection by editing the ```config.py``` file
+2. Execute the ETL Cleaning and Transforming processes
+```
+python save_cleaned_df_app.py
+```
+3. Execute Loading to DB processes
+```
+python loading_app.py
+```
+4. After the ETL operations, you can export the data to a Tableau-friendly format or use the provided scripts/tools within the project for visualization in Tableau.
+
+
+## Support
+If you encounter any issues or have questions regarding the project's operation, please use the "Issues" section on GitHub or contact directly via email.
+
+## License
+This project is available under the MIT license. More details can be found in the LICENSE file.
+
 
