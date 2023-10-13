@@ -42,7 +42,8 @@ Download to "dataset" directory files:
 
 ## Execution
 1. Configure your database connection by editing the ```config.py``` file
-2. Execute the ETL Cleaning and Transforming processes
+2. From directory ```postgres SQL create schema queries``` run ```schema queries``` file on your own database
+3. Execute the ETL Cleaning and Transforming processes
 ```
 python save_cleaned_df_app.py
 ```
